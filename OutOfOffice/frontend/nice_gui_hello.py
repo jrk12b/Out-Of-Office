@@ -1,5 +1,8 @@
-#!/usr/bin/env python3
 from nicegui import events, ui # type: ignore
+from datetime import datetime
+from fullcalendar import FullCalendar as fullcalendar
+# dark = ui.dark_mode()
+# dark.enable() 
 
 with ui.header().classes(replace='row items-center') as header:
     ui.button(on_click=lambda: left_drawer.toggle(), icon='menu').props('flat color=white')
@@ -38,6 +41,47 @@ with ui.tab_panels(tabs, value='2024').classes('w-full'):
             {'id': 6, 'name': 'New York', 'date': 25},
             {'id': 7, 'name': 'New York', 'date': 25},
         ]
+        options = {
+                    'initialView': 'dayGridMonth',
+                    'headerToolbar': {'left': 'title', 'right': ''},
+                    'footerToolbar': {'right': 'prev,next today'},
+                    'slotMinTime': '05:00:00',
+                    'slotMaxTime': '22:00:00',
+                    'allDaySlot': False,
+                    'timeZone': 'local',
+                    'height': 'auto',
+                    'width': 'auto',
+                    'events': [
+                        {
+                            'title': 'Math',
+                            'start': datetime.now().strftime(r'%Y-%m-%d') + ' 08:00:00',
+                            'end': datetime.now().strftime(r'%Y-%m-%d') + ' 10:00:00',
+                            'color': 'red',
+                        },
+                        {
+                            'title': 'Physics',
+                            'start': datetime.now().strftime(r'%Y-%m-%d') + ' 10:00:00',
+                            'end': datetime.now().strftime(r'%Y-%m-%d') + ' 12:00:00',
+                            'color': 'green',
+                        },
+                        {
+                            'title': 'Chemistry',
+                            'start': datetime.now().strftime(r'%Y-%m-%d') + ' 13:00:00',
+                            'end': datetime.now().strftime(r'%Y-%m-%d') + ' 15:00:00',
+                            'color': 'blue',
+                        },
+                        {
+                            'title': 'Biology',
+                            'start': datetime.now().strftime(r'%Y-%m-%d') + ' 15:00:00',
+                            'end': datetime.now().strftime(r'%Y-%m-%d') + ' 17:00:00',
+                            'color': 'orange',
+                        },
+                    ],
+                }
+
+        def handle_click(event: events.GenericEventArguments):
+            if 'info' in event.args:
+                ui.notify(event.args['info']['event'])
         def add_row() -> None:
             new_id = max((dx['id'] for dx in rows), default=-1) + 1
             rows.append({'id': new_id, 'name': 'New PTO', 'date': 21})
@@ -68,20 +112,33 @@ with ui.tab_panels(tabs, value='2024').classes('w-full'):
             ui.notify(f'Deleted row with ID {e.args["id"]}')
             table.update()
             
-        with ui.row().classes('items-start'):
-            table = ui.table(columns=columns, rows=rows, row_key='name')
+        with ui.column().classes('items-start'):
+            # Top row with Table on the left and PTO Cards on the right, in a horizontal layout
+            with ui.row().classes('justify-start items-start gap-4'):
+                
+                # Table on the left
+                table = ui.table(columns=columns, rows=rows, row_key='name').classes('flex-grow')
+                
+                # PTO Cards section and calendar/label on the right
+                with ui.column().classes('gap-4'):
+                    # PTO Cards displayed horizontally
+                    with ui.row().classes('gap-4'):
+                        with ui.card():
+                            ui.label('Total PTO').classes('text-h6 text-primary')
+                            total_pto_label = ui.label(f'{total_pto_value} Days').classes('text-h6 text-primary')
 
-            with ui.card():
-                ui.label('Total PTO').classes('text-h6 text-primary')
-                total_pto_label = ui.label(f'{total_pto_value} Days').classes('text-h6 text-primary')  # Just a label
+                        with ui.card():
+                            ui.label('PTO Planned').classes('text-h6 text-primary')
+                            pto_planned_label = ui.label(f'{len(rows)} Days').classes('text-h6 text-primary')
 
-            with ui.card():
-                ui.label('PTO Planned').classes('text-h6 text-primary')
-                pto_planned_label = ui.label(f'{len(rows)}').classes('text-h6 text-primary')  # Just a label
+                        with ui.card():
+                            ui.label('PTO Remaining').classes('text-h6 text-primary')
+                            pto_remaining_label = ui.label(f'{total_pto_value - len(rows)} Days').classes('text-h6 text-primary')
 
-            with ui.card():
-                ui.label('PTO Remaining').classes('text-h6 text-primary')
-                pto_remaining_label = ui.label(f'{total_pto_value - len(rows)} Days').classes('text-h6 text-primary')
+                    # Calendar and additional label below the PTO cards but next to the table
+                    with ui.column().classes('gap-2'):
+                        fullcalendar(options, on_click=handle_click).classes('ml-10 mt-5').style('min-width: 400px; max-width: 800px; height: 500px;')
+# .classes('mt-4 ml-2')
 
         update_pto_planned()
         update_pto_remaining()
@@ -128,9 +185,5 @@ with ui.tab_panels(tabs, value='2024').classes('w-full'):
         ui.label('Content of 2023')
     with ui.tab_panel('2022'):
         ui.label('Content of 2022')
-
-
-dark = ui.dark_mode()
-dark.enable() 
 
 ui.run()
