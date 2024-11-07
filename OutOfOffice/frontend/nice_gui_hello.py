@@ -1,24 +1,29 @@
 #!/usr/bin/env python3
-from nicegui import events, ui
+from nicegui import events, ui # type: ignore
 
 with ui.header().classes(replace='row items-center') as header:
     ui.button(on_click=lambda: left_drawer.toggle(), icon='menu').props('flat color=white')
     with ui.tabs() as tabs:
-        ui.tab('A')
-        ui.tab('B')
-        ui.tab('C')
+        ui.tab('2024')
+        ui.tab('2023')
+        ui.tab('2022')
 
 with ui.footer(value=False) as footer:
     ui.label('Footer')
 
-with ui.left_drawer().classes('bg-blue-100') as left_drawer:
-    ui.label('Side menu')
+with ui.left_drawer(value=False) as left_drawer:
+    ui.label('Home')
+    ui.label('Account')
+    ui.label('Trips')
+    ui.label('Budget')
+    ui.label('Recommendations')
+    ui.label('Destination Insights')
 
 with ui.page_sticky(position='bottom-right', x_offset=20, y_offset=20):
     ui.button(on_click=footer.toggle, icon='contact_support').props('fab')
 
-with ui.tab_panels(tabs, value='A').classes('w-full'):        
-    with ui.tab_panel('A'):
+with ui.tab_panels(tabs, value='2024').classes('w-full'):        
+    with ui.tab_panel('2024'):
         columns = [
             {'name': 'name', 'label': 'Name', 'field': 'name', 'align': 'left'},
             {'name': 'date', 'label': 'Date', 'field': 'date'},
@@ -32,34 +37,24 @@ with ui.tab_panels(tabs, value='A').classes('w-full'):
             {'id': 5, 'name': 'Sarasota, FL with Ryan', 'date': 25},
             {'id': 6, 'name': 'New York', 'date': 25},
             {'id': 7, 'name': 'New York', 'date': 25},
-            {'id': 8, 'name': 'Camping with Family', 'date': 25},
-            {'id': 9, 'name': 'Boston NBA Finals', 'date': 25},
-            {'id': 10, 'name': 'Boston NBA Finals', 'date': 25},
-            {'id': 11, 'name': 'Boston NBA Finals', 'date': 25},
-            {'id': 12, 'name': 'Boston NBA Finals', 'date': 25},
-            {'id': 13, 'name': 'Colorado with Scott', 'date': 25},
-            {'id': 14, 'name': 'Colorado with Scott', 'date': 25},
-            {'id': 15, 'name': 'Colorado with Scott', 'date': 25},
-            {'id': 16, 'name': 'Colorado with Scott', 'date': 25},
-            {'id': 17, 'name': 'Colorado with Scott', 'date': 25},
-            {'id': 18, 'name': 'DC with Hannah', 'date': 25},
-            {'id': 19, 'name': 'DC with Hannah', 'date': 25},
-            {'id': 20, 'name': 'DC with Hannah', 'date': 25},
-            {'id': 21, 'name': 'Iceland', 'date': 25},
-            {'id': 22, 'name': 'Iceland', 'date': 25},
-            {'id': 23, 'name': 'Iceland', 'date': 25},
-            {'id': 24, 'name': 'Iceland', 'date': 25},
-            {'id': 25, 'name': 'Iceland', 'date': 25},
-            {'id': 26, 'name': 'Iceland', 'date': 25},
-            {'id': 27, 'name': 'Iceland', 'date': 25},
-            {'id': 28, 'name': 'Kevin Wedding', 'date': 25},
         ]
         def add_row() -> None:
             new_id = max((dx['id'] for dx in rows), default=-1) + 1
             rows.append({'id': new_id, 'name': 'New PTO', 'date': 21})
             ui.notify(f'Added new row with ID {new_id}')
             table.update()
-
+            update_pto_planned()
+        
+        def update_pto_planned():
+            row_count = len(rows)
+            pto_planned_label.text = f'{row_count}'  # Update the text of the PTO Planned label
+            update_pto_remaining()
+        
+        def update_pto_remaining():
+            # Calculate remaining PTO and update the label
+            pto_remaining_value = total_pto_value - int(pto_planned_label.text)  # Convert label text to int
+            pto_remaining_label.text = f'{pto_remaining_value} Days'
+        total_pto_value = 21
 
         def rename(e: events.GenericEventArguments) -> None:
             for row in rows:
@@ -68,13 +63,29 @@ with ui.tab_panels(tabs, value='A').classes('w-full'):
             ui.notify(f'Updated rows to: {table.rows}')
             table.update()
 
-
         def delete(e: events.GenericEventArguments) -> None:
             rows[:] = [row for row in rows if row['id'] != e.args['id']]
             ui.notify(f'Deleted row with ID {e.args["id"]}')
             table.update()
+            
+        with ui.row().classes('items-start'):
+            table = ui.table(columns=columns, rows=rows, row_key='name')
 
-        table = ui.table(columns=columns, rows=rows, row_key='name').classes('')
+            with ui.card():
+                ui.label('Total PTO').classes('text-h6 text-primary')
+                total_pto_label = ui.label(f'{total_pto_value} Days').classes('text-h6 text-primary')  # Just a label
+
+            with ui.card():
+                ui.label('PTO Planned').classes('text-h6 text-primary')
+                pto_planned_label = ui.label(f'{len(rows)}').classes('text-h6 text-primary')  # Just a label
+
+            with ui.card():
+                ui.label('PTO Remaining').classes('text-h6 text-primary')
+                pto_remaining_label = ui.label(f'{total_pto_value - len(rows)} Days').classes('text-h6 text-primary')
+
+        update_pto_planned()
+        update_pto_remaining()
+
         table.add_slot('header', r'''
             <q-tr :props="props">
                 <q-th auto-width />
@@ -110,12 +121,16 @@ with ui.tab_panels(tabs, value='A').classes('w-full'):
         ''')
         with table.add_slot('bottom-row'):
             with table.cell().props('colspan=3'):
-                ui.button('Add row', icon='add', color='accent', on_click=add_row).classes('w-full')
+                ui.button('Add row', icon='add', color='primary', on_click=add_row).classes('w-full')
         table.on('rename', rename)
         table.on('delete', delete)
-    with ui.tab_panel('B'):
-        ui.label('Content of B')
-    with ui.tab_panel('C'):
-        ui.label('Content of C')
+    with ui.tab_panel('2023'):
+        ui.label('Content of 2023')
+    with ui.tab_panel('2022'):
+        ui.label('Content of 2022')
+
+
+dark = ui.dark_mode()
+dark.enable() 
 
 ui.run()
