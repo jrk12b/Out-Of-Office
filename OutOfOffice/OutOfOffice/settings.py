@@ -37,6 +37,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'database'
 ]
 
 MIDDLEWARE = [
@@ -75,8 +76,12 @@ WSGI_APPLICATION = 'OutOfOffice.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': 'out_of_office',
+        'USER': 'db_admin',
+        'PASSWORD': 'Nowitzki#41',
+        'HOST': 'localhost',  # Or your PostgreSQL server address
+        'PORT': '5432',       # Default PostgreSQL port
     }
 }
 

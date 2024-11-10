@@ -1,15 +1,19 @@
 from nicegui import events, ui # type: ignore
-from datetime import datetime
 from fullcalendar import FullCalendar as fullcalendar
+from datetime import datetime
+import requests # type: ignore
 # dark = ui.dark_mode()
 # dark.enable() 
 
+response = requests.get('http://127.0.0.1:8000/database/items/')
+items = response.json().get('items', [])
+
 with ui.header().classes(replace='row items-center') as header:
-    ui.button(on_click=lambda: left_drawer.toggle(), icon='menu').props('flat color=white')
-    with ui.tabs() as tabs:
-        ui.tab('2024')
-        ui.tab('2023')
-        ui.tab('2022')
+        ui.button(on_click=lambda: left_drawer.toggle(), icon='menu').props('flat color=white')
+        with ui.tabs() as tabs:
+            ui.tab('2024')
+            ui.tab('2023')
+            ui.tab('2022')
 
 with ui.footer(value=False) as footer:
     ui.label('Footer')
@@ -25,60 +29,59 @@ with ui.left_drawer(value=False) as left_drawer:
 with ui.page_sticky(position='bottom-right', x_offset=20, y_offset=20):
     ui.button(on_click=footer.toggle, icon='contact_support').props('fab')
 
-with ui.tab_panels(tabs, value='2024').classes('w-full'):        
+with ui.tab_panels(tabs, value='2024').classes('w-full'):
+    columns = [
+        {'name': 'name', 'label': 'Name', 'field': 'name', 'align': 'left'},
+        {'name': 'date', 'label': 'Date', 'field': 'date'},
+    ]
+    rows = [
+        {'id': 0, 'name': 'Misc - in VA', 'date': '02/19/2024'},
+        {'id': 1, 'name': 'Misc - in VA', 'date': '02/20/2024'},
+        {'id': 2, 'name': 'Sarasota, FL with Ryan', 'date': '02/19/2024'},
+        {'id': 3, 'name': 'Sarasota, FL with Ryan', 'date': 32},
+        {'id': 4, 'name': 'Sarasota, FL with Ryan', 'date': 12},
+        {'id': 5, 'name': 'Sarasota, FL with Ryan', 'date': 25},
+        {'id': 6, 'name': 'New York', 'date': 25},
+        {'id': 7, 'name': 'New York', 'date': 25},
+    ]
+    options = {
+                'initialView': 'dayGridMonth',
+                'headerToolbar': {'left': 'title', 'right': ''},
+                'footerToolbar': {'right': 'prev,next today'},
+                'slotMinTime': '05:00:00',
+                'slotMaxTime': '22:00:00',
+                'allDaySlot': False,
+                'timeZone': 'local',
+                'height': 'auto',
+                'width': 'auto',
+                'events': [
+                    {
+                        'title': 'Math',
+                        'start': datetime.now().strftime(r'%Y-%m-%d') + ' 08:00:00',
+                        'end': datetime.now().strftime(r'%Y-%m-%d') + ' 10:00:00',
+                        'color': 'red',
+                    },
+                    {
+                        'title': 'Physics',
+                        'start': datetime.now().strftime(r'%Y-%m-%d') + ' 10:00:00',
+                        'end': datetime.now().strftime(r'%Y-%m-%d') + ' 12:00:00',
+                        'color': 'green',
+                    },
+                    {
+                        'title': 'Chemistry',
+                        'start': datetime.now().strftime(r'%Y-%m-%d') + ' 13:00:00',
+                        'end': datetime.now().strftime(r'%Y-%m-%d') + ' 15:00:00',
+                        'color': 'blue',
+                    },
+                    {
+                        'title': 'Biology',
+                        'start': datetime.now().strftime(r'%Y-%m-%d') + ' 15:00:00',
+                        'end': datetime.now().strftime(r'%Y-%m-%d') + ' 17:00:00',
+                        'color': 'orange',
+                    },
+                ],
+            }
     with ui.tab_panel('2024'):
-        columns = [
-            {'name': 'name', 'label': 'Name', 'field': 'name', 'align': 'left'},
-            {'name': 'date', 'label': 'Date', 'field': 'date'},
-            ]
-        rows = [
-            {'id': 0, 'name': 'Misc - in VA', 'date': '02/19/2024'},
-            {'id': 1, 'name': 'Misc - in VA', 'date': '02/20/2024'},
-            {'id': 2, 'name': 'Sarasota, FL with Ryan', 'date': '02/19/2024'},
-            {'id': 3, 'name': 'Sarasota, FL with Ryan', 'date': 32},
-            {'id': 4, 'name': 'Sarasota, FL with Ryan', 'date': 12},
-            {'id': 5, 'name': 'Sarasota, FL with Ryan', 'date': 25},
-            {'id': 6, 'name': 'New York', 'date': 25},
-            {'id': 7, 'name': 'New York', 'date': 25},
-        ]
-        options = {
-                    'initialView': 'dayGridMonth',
-                    'headerToolbar': {'left': 'title', 'right': ''},
-                    'footerToolbar': {'right': 'prev,next today'},
-                    'slotMinTime': '05:00:00',
-                    'slotMaxTime': '22:00:00',
-                    'allDaySlot': False,
-                    'timeZone': 'local',
-                    'height': 'auto',
-                    'width': 'auto',
-                    'events': [
-                        {
-                            'title': 'Math',
-                            'start': datetime.now().strftime(r'%Y-%m-%d') + ' 08:00:00',
-                            'end': datetime.now().strftime(r'%Y-%m-%d') + ' 10:00:00',
-                            'color': 'red',
-                        },
-                        {
-                            'title': 'Physics',
-                            'start': datetime.now().strftime(r'%Y-%m-%d') + ' 10:00:00',
-                            'end': datetime.now().strftime(r'%Y-%m-%d') + ' 12:00:00',
-                            'color': 'green',
-                        },
-                        {
-                            'title': 'Chemistry',
-                            'start': datetime.now().strftime(r'%Y-%m-%d') + ' 13:00:00',
-                            'end': datetime.now().strftime(r'%Y-%m-%d') + ' 15:00:00',
-                            'color': 'blue',
-                        },
-                        {
-                            'title': 'Biology',
-                            'start': datetime.now().strftime(r'%Y-%m-%d') + ' 15:00:00',
-                            'end': datetime.now().strftime(r'%Y-%m-%d') + ' 17:00:00',
-                            'color': 'orange',
-                        },
-                    ],
-                }
-
         def handle_click(event: events.GenericEventArguments):
             if 'info' in event.args:
                 ui.notify(event.args['info']['event'])
@@ -138,7 +141,6 @@ with ui.tab_panels(tabs, value='2024').classes('w-full'):
                     # Calendar and additional label below the PTO cards but next to the table
                     with ui.column().classes('gap-2'):
                         fullcalendar(options, on_click=handle_click).classes('ml-10 mt-5').style('min-width: 400px; max-width: 800px; height: 500px;')
-# .classes('mt-4 ml-2')
 
         update_pto_planned()
         update_pto_remaining()
@@ -185,5 +187,9 @@ with ui.tab_panels(tabs, value='2024').classes('w-full'):
         ui.label('Content of 2023')
     with ui.tab_panel('2022'):
         ui.label('Content of 2022')
+        with ui.column():
+            for item in items:
+                with ui.card():
+                    ui.markdown(f"Name: {item['name']}\nDate: {item['date']}")
 
 ui.run()

@@ -1,0 +1,26 @@
+to start postgres service:
+brew services start postgresql
+
+to access postgress command line:
+psql postgres
+
+db_admin
+Nowitzki#41
+
+db name:
+out_of_office
+
+to view all dbs:
+\l
+
+to view all users:
+\du
+
+to quit psql
+\q
+
+to connect to my db:
+psql -U db_admin -d out_of_office
+
+to view tables:
+\dt
