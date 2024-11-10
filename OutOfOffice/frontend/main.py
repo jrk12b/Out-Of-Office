@@ -2,11 +2,9 @@ from nicegui import events, ui # type: ignore
 from fullcalendar import FullCalendar as fullcalendar
 from datetime import datetime
 import requests # type: ignore
+from django.middleware.csrf import get_token # type: ignore
 # dark = ui.dark_mode()
 # dark.enable() 
-
-response = requests.get('http://127.0.0.1:8000/database/items/')
-items = response.json().get('items', [])
 
 with ui.header().classes(replace='row items-center') as header:
         ui.button(on_click=lambda: left_drawer.toggle(), icon='menu').props('flat color=white')
@@ -29,20 +27,17 @@ with ui.left_drawer(value=False) as left_drawer:
 with ui.page_sticky(position='bottom-right', x_offset=20, y_offset=20):
     ui.button(on_click=footer.toggle, icon='contact_support').props('fab')
 
+response = requests.get('http://127.0.0.1:8000/database/items/')
+items = response.json().get('items', [])
+
 with ui.tab_panels(tabs, value='2024').classes('w-full'):
     columns = [
         {'name': 'name', 'label': 'Name', 'field': 'name', 'align': 'left'},
         {'name': 'date', 'label': 'Date', 'field': 'date'},
     ]
     rows = [
-        {'id': 0, 'name': 'Misc - in VA', 'date': '02/19/2024'},
-        {'id': 1, 'name': 'Misc - in VA', 'date': '02/20/2024'},
-        {'id': 2, 'name': 'Sarasota, FL with Ryan', 'date': '02/19/2024'},
-        {'id': 3, 'name': 'Sarasota, FL with Ryan', 'date': 32},
-        {'id': 4, 'name': 'Sarasota, FL with Ryan', 'date': 12},
-        {'id': 5, 'name': 'Sarasota, FL with Ryan', 'date': 25},
-        {'id': 6, 'name': 'New York', 'date': 25},
-        {'id': 7, 'name': 'New York', 'date': 25},
+        {'id': idx, 'name': item['name'], 'date': item['date']}
+        for idx, item in enumerate(items)
     ]
     options = {
                 'initialView': 'dayGridMonth',
@@ -86,12 +81,37 @@ with ui.tab_panels(tabs, value='2024').classes('w-full'):
             if 'info' in event.args:
                 ui.notify(event.args['info']['event'])
         def add_row() -> None:
-            new_id = max((dx['id'] for dx in rows), default=-1) + 1
-            rows.append({'id': new_id, 'name': 'New PTO', 'date': 21})
-            ui.notify(f'Added new row with ID {new_id}')
-            table.update()
-            update_pto_planned()
-        
+            with requests.Session() as session:
+                csrf_response = session.get('http://127.0.0.1:8000/database/get-csrf-token/')
+                csrf_token = csrf_response.json().get('csrfToken')
+                new_id = max((dx['id'] for dx in rows), default=-1) + 1
+                new_row = {'id': new_id, 'name': 'New PTO', 'date': '2024-11-21'}  # example date format
+                headers = {
+                    'X-CSRFToken': csrf_token,  # Use the CSRF token in headers
+                    'Content-Type': 'application/json'
+                    }
+
+                try:
+                    # Send POST request to add the new row to the database
+                    response = session.post('http://127.0.0.1:8000/database/items/add/', json=new_row, headers=headers)
+                    
+                    # Check if the request was successful
+                    if response.status_code == 201:  # assuming 201 Created is returned for success
+                        # Get the row data (including DB-generated ID if applicable)
+                        db_row = response.json()  # Assume the response contains the created row with 'id'
+                        new_row['id'] = db_row.get('id', new_id)  # Update with DB ID if available
+
+                        # Add row to table
+                        rows.append(new_row)
+                        ui.notify(f'Added new row with ID {new_row["id"]}')
+                        table.update()
+                        update_pto_planned()
+                    else:
+                        ui.notify(f"Failed to add row to the database: {response.text}", color="red")
+
+                except requests.exceptions.RequestException as e:
+                    ui.notify(f"Error adding row to database: {str(e)}", color="red")
+            
         def update_pto_planned():
             row_count = len(rows)
             pto_planned_label.text = f'{row_count}'  # Update the text of the PTO Planned label
@@ -104,16 +124,72 @@ with ui.tab_panels(tabs, value='2024').classes('w-full'):
         total_pto_value = 21
 
         def rename(e: events.GenericEventArguments) -> None:
+            # Get the updated values from the event arguments
+            updated_row = e.args
+            row_id = updated_row['id']
+            
+            # Find the row in the frontend table
             for row in rows:
-                if row['id'] == e.args['id']:
-                    row.update(e.args)
-            ui.notify(f'Updated rows to: {table.rows}')
-            table.update()
+                if row['id'] == row_id:
+                    row.update(updated_row)  # Update the row in the frontend table
+            
+            # Prepare the data to be sent to the backend for updating the database
+            data = {
+                'name': updated_row['name'],
+                'date': updated_row['date']
+            }
+            with requests.Session() as session:
+                # Get the CSRF token for making a POST request
+                csrf_response = session.get('http://127.0.0.1:8000/database/get-csrf-token/')
+                csrf_token = csrf_response.json().get('csrfToken')
+
+                # Set up the headers with CSRF token
+                headers = {
+                    'X-CSRFToken': csrf_token,
+                    'Content-Type': 'application/json'
+                }
+
+                # Send a PATCH request to update the item in the database
+                try:
+                    response = session.patch(f'http://127.0.0.1:8000/database/items/{row_id}/update/', json=data, headers=headers)
+                    if response.status_code == 200:
+                        # If update was successful, update the frontend table
+                        updated_item = response.json()
+                        ui.notify(f'Updated item with ID {updated_item["id"]}')
+                        table.update()
+                    else:
+                        ui.notify(f"Failed to update item: {response.text}", color="red")
+                except requests.exceptions.RequestException as e:
+                    ui.notify(f"Error updating item: {str(e)}", color="red")
+
 
         def delete(e: events.GenericEventArguments) -> None:
-            rows[:] = [row for row in rows if row['id'] != e.args['id']]
-            ui.notify(f'Deleted row with ID {e.args["id"]}')
-            table.update()
+            row_id = e.args['id']
+            
+            # Remove the row from the frontend table (rows list)
+            rows[:] = [row for row in rows if row['id'] != row_id]
+            
+            with requests.Session() as session:
+                # Prepare headers with CSRF token
+                csrf_response = session.get('http://127.0.0.1:8000/database/get-csrf-token/')
+                csrf_token = csrf_response.json().get('csrfToken')
+                headers = {
+                    'X-CSRFToken': csrf_token,
+                    'Content-Type': 'application/json'
+                }
+
+                # Send a DELETE request to the backend to remove the item from the database
+                try:
+                    response = session.delete(f'http://127.0.0.1:8000/database/items/{row_id}/delete/', headers=headers)
+                    
+                    if response.status_code == 200:
+                        ui.notify(f'Deleted row with ID {row_id}')
+                        table.update()
+                        update_pto_planned()
+                    else:
+                        ui.notify(f"Failed to delete item: {response.text}", color="red")
+                except requests.exceptions.RequestException as e:
+                    ui.notify(f"Error deleting item: {str(e)}", color="red")
             
         with ui.column().classes('items-start'):
             # Top row with Table on the left and PTO Cards on the right, in a horizontal layout
