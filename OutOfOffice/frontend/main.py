@@ -4,7 +4,23 @@ from datetime import datetime
 import requests # type: ignore
 from django.middleware.csrf import get_token # type: ignore
 # dark = ui.dark_mode()
-# dark.enable() 
+# dark.enable()
+
+# ui.add_head_html("""
+#     <style>
+#         body, .q-tab-panels, .q-drawer {
+#             background-color: #333333; /* Dark grey background */
+#             color: white; /* White text */
+#         }
+#         .nicegui-card, .nicegui-label, .nicegui-button, .text-left, .text-right {
+#             color: white; /* Ensure specific elements also have white text */
+#         }
+#         .q-card, .q-table {
+#             background-color: #3D3D3D;
+#             border: 2px solid white;
+#         }
+#     </style>
+# """)
 
 with ui.header().classes(replace='row items-center') as header:
         ui.button(on_click=lambda: left_drawer.toggle(), icon='menu').props('flat color=white')
@@ -40,42 +56,26 @@ with ui.tab_panels(tabs, value='2024').classes('w-full'):
         for idx, item in enumerate(items)
     ]
     options = {
-                'initialView': 'dayGridMonth',
-                'headerToolbar': {'left': 'title', 'right': ''},
-                'footerToolbar': {'right': 'prev,next today'},
-                'slotMinTime': '05:00:00',
-                'slotMaxTime': '22:00:00',
-                'allDaySlot': False,
-                'timeZone': 'local',
-                'height': 'auto',
-                'width': 'auto',
-                'events': [
-                    {
-                        'title': 'Math',
-                        'start': datetime.now().strftime(r'%Y-%m-%d') + ' 08:00:00',
-                        'end': datetime.now().strftime(r'%Y-%m-%d') + ' 10:00:00',
-                        'color': 'red',
-                    },
-                    {
-                        'title': 'Physics',
-                        'start': datetime.now().strftime(r'%Y-%m-%d') + ' 10:00:00',
-                        'end': datetime.now().strftime(r'%Y-%m-%d') + ' 12:00:00',
-                        'color': 'green',
-                    },
-                    {
-                        'title': 'Chemistry',
-                        'start': datetime.now().strftime(r'%Y-%m-%d') + ' 13:00:00',
-                        'end': datetime.now().strftime(r'%Y-%m-%d') + ' 15:00:00',
-                        'color': 'blue',
-                    },
-                    {
-                        'title': 'Biology',
-                        'start': datetime.now().strftime(r'%Y-%m-%d') + ' 15:00:00',
-                        'end': datetime.now().strftime(r'%Y-%m-%d') + ' 17:00:00',
-                        'color': 'orange',
-                    },
-                ],
-            }
+        'initialView': 'dayGridMonth',
+        'headerToolbar': {'left': 'title', 'right': ''},
+        'footerToolbar': {'right': 'prev,next today'},
+        'slotMinTime': '05:00:00',
+        'slotMaxTime': '22:00:00',
+        'allDaySlot': False,
+        'timeZone': 'local',
+        'height': 'auto',
+        'width': 'auto',
+        'events': []  # Start with an empty list for events
+    }
+    # Populate the events from the items data
+    for item in items:
+        event = {
+            'title': item['name'],
+            'start': f"{item['date']} 08:00:00",  # Adjust time as needed
+            'end': f"{item['date']} 10:00:00",    # End time example, adjust as needed
+            'color': 'red',  # Customize color if needed
+        }
+        options['events'].append(event)
     with ui.tab_panel('2024'):
         def handle_click(event: events.GenericEventArguments):
             if 'info' in event.args:
@@ -121,7 +121,7 @@ with ui.tab_panels(tabs, value='2024').classes('w-full'):
             # Calculate remaining PTO and update the label
             pto_remaining_value = total_pto_value - int(pto_planned_label.text)  # Convert label text to int
             pto_remaining_label.text = f'{pto_remaining_value} Days'
-        total_pto_value = 21
+        total_pto_value = 31
 
         def rename(e: events.GenericEventArguments) -> None:
             # Get the updated values from the event arguments
@@ -263,9 +263,5 @@ with ui.tab_panels(tabs, value='2024').classes('w-full'):
         ui.label('Content of 2023')
     with ui.tab_panel('2022'):
         ui.label('Content of 2022')
-        with ui.column():
-            for item in items:
-                with ui.card():
-                    ui.markdown(f"Name: {item['name']}\nDate: {item['date']}")
 
 ui.run()
