@@ -4,6 +4,7 @@ from datetime import datetime
 import requests # type: ignore
 from django.middleware.csrf import get_token # type: ignore
 from footer import create_footer
+from header_drawer import create_header_and_drawer
 # dark = ui.dark_mode()
 # dark.enable()
 
@@ -12,22 +13,9 @@ ui.add_head_html("""
     </style>
 """)
 
-with ui.header().classes(replace='row items-center') as header:
-        ui.button(on_click=lambda: left_drawer.toggle(), icon='menu').props('flat color=white')
-        with ui.tabs() as tabs:
-            ui.tab('2024')
-            ui.tab('2023')
-            ui.tab('2022')
+header, tabs, left_drawer = create_header_and_drawer()
 
 footer = create_footer()
-
-with ui.left_drawer(value=False) as left_drawer:
-    ui.label('Home')
-    ui.label('Account')
-    ui.label('Trips')
-    ui.label('Budget')
-    ui.label('Recommendations')
-    ui.label('Destination Insights')
 
 with ui.page_sticky(position='bottom-right', x_offset=20, y_offset=20):
     ui.button(on_click=footer.toggle, icon='contact_support').props('fab')
