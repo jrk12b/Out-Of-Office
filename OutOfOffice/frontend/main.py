@@ -6,21 +6,11 @@ from django.middleware.csrf import get_token # type: ignore
 # dark = ui.dark_mode()
 # dark.enable()
 
-# ui.add_head_html("""
-#     <style>
-#         body, .q-tab-panels, .q-drawer {
-#             background-color: #333333; /* Dark grey background */
-#             color: white; /* White text */
-#         }
-#         .nicegui-card, .nicegui-label, .nicegui-button, .text-left, .text-right {
-#             color: white; /* Ensure specific elements also have white text */
-#         }
-#         .q-card, .q-table {
-#             background-color: #3D3D3D;
-#             border: 2px solid white;
-#         }
-#     </style>
-# """)
+ui.add_head_html("""
+    <style>
+    </style>
+""")
+
 
 with ui.header().classes(replace='row items-center') as header:
         ui.button(on_click=lambda: left_drawer.toggle(), icon='menu').props('flat color=white')
@@ -196,6 +186,7 @@ with ui.tab_panels(tabs, value='2024').classes('w-full'):
             with ui.row().classes('justify-start items-start gap-4'):
                 
                 # Table on the left
+                rows = sorted(rows, key=lambda x: datetime.strptime(x['date'], '%Y-%m-%d'), reverse=True)
                 table = ui.table(columns=columns, rows=rows, row_key='name').classes('flex-grow')
                 
                 # PTO Cards section and calendar/label on the right
