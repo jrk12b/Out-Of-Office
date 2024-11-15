@@ -3,6 +3,7 @@ from fullcalendar import FullCalendar as fullcalendar
 from datetime import datetime
 import requests # type: ignore
 from django.middleware.csrf import get_token # type: ignore
+from footer import create_footer
 # dark = ui.dark_mode()
 # dark.enable()
 
@@ -11,7 +12,6 @@ ui.add_head_html("""
     </style>
 """)
 
-
 with ui.header().classes(replace='row items-center') as header:
         ui.button(on_click=lambda: left_drawer.toggle(), icon='menu').props('flat color=white')
         with ui.tabs() as tabs:
@@ -19,8 +19,7 @@ with ui.header().classes(replace='row items-center') as header:
             ui.tab('2023')
             ui.tab('2022')
 
-with ui.footer(value=False) as footer:
-    ui.label('Footer')
+footer = create_footer()
 
 with ui.left_drawer(value=False) as left_drawer:
     ui.label('Home')
@@ -188,7 +187,7 @@ with ui.tab_panels(tabs, value='2024').classes('w-full'):
                 # Table on the left
                 rows = sorted(rows, key=lambda x: datetime.strptime(x['date'], '%Y-%m-%d'), reverse=True)
                 table = ui.table(columns=columns, rows=rows, row_key='name').classes('flex-grow')
-                
+
                 # PTO Cards section and calendar/label on the right
                 with ui.column().classes('gap-4'):
                     # PTO Cards displayed horizontally
