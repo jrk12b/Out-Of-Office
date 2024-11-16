@@ -1,4 +1,4 @@
-from nicegui import ui
+from nicegui import ui # type: ignore
 
 def create_header_and_drawer():
     # Create header with menu button and tabs

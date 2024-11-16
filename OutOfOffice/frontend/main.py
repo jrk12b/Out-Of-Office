@@ -3,7 +3,7 @@ from fullcalendar import FullCalendar as fullcalendar
 from datetime import datetime
 import requests # type: ignore
 from django.middleware.csrf import get_token # type: ignore
-from footer import create_footer
+import footer
 from header_drawer import create_header_and_drawer
 import tab_content
 
@@ -14,10 +14,7 @@ ui.add_head_html("""
 
 header, tabs, left_drawer = create_header_and_drawer()
 
-footer = create_footer()
-
-with ui.page_sticky(position='bottom-right', x_offset=20, y_offset=20):
-    ui.button(on_click=footer.toggle, icon='contact_support').props('fab')
+footer.content()
 
 response = requests.get('http://127.0.0.1:8000/database/items/')
 items = response.json().get('items', [])
@@ -47,11 +44,12 @@ with ui.tab_panels(tabs, value='2024').classes('w-full'):
     for item in items:
         event = {
             'title': item['name'],
-            'start': f"{item['date']} 08:00:00",  # Adjust time as needed
-            'end': f"{item['date']} 10:00:00",    # End time example, adjust as needed
-            'color': 'red',  # Customize color if needed
+            'start': f"{item['date']} 08:00:00",
+            'end': f"{item['date']} 10:00:00",
+            'color': 'red',
         }
         options['events'].append(event)
+
     with ui.tab_panel('2024'):
         tab_content.current_year_content()
     with ui.tab_panel('2023'):
