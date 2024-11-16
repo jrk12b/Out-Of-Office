@@ -136,10 +136,25 @@ def current_year_content() -> None:
 
     def delete(e: events.GenericEventArguments) -> None:
         row_id = e.args['id']
-        
+        print(f'e: {e}')
+        print(f'row_id: {row_id}')
+
+        # Find the row to delete
+        row_to_delete = next((row for row in rows if row['id'] == row_id), None)
+        if not row_to_delete:
+            ui.notify("Row not found", color="red")
+            return
+
         # Remove the row from the frontend table (rows list)
         rows[:] = [row for row in rows if row['id'] != row_id]
-        
+
+        calendar_event = {
+            'title': row_to_delete['name'],
+            'start': f"{row_to_delete['date']} 08:00:00",
+            'end': f"{row_to_delete['date']} 17:00:00",
+        }
+        calendar.remove_event(**calendar_event)
+
         with requests.Session() as session:
             # Prepare headers with CSRF token
             csrf_response = session.get('http://127.0.0.1:8000/database/get-csrf-token/')
@@ -152,15 +167,15 @@ def current_year_content() -> None:
             # Send a DELETE request to the backend to remove the item from the database
             try:
                 response = session.delete(f'http://127.0.0.1:8000/database/items/{row_id}/delete/', headers=headers)
-                
+
                 if response.status_code == 200:
-                    ui.notify(f'Deleted row with ID {row_id}')
+                    ui.notify(f'Deleted row and event with ID {row_id}')
                     table.update()
                     update_pto_planned()
                 else:
                     ui.notify(f"Failed to delete item: {response.text}", color="red")
-            except requests.exceptions.RequestException as e:
-                ui.notify(f"Error deleting item: {str(e)}", color="red")
+            except requests.exceptions.RequestException as exc:
+                ui.notify(f"Error deleting item: {str(exc)}", color="red")
         
     with ui.column().classes('items-start'):
         # Top row with Table on the left and PTO Cards on the right, in a horizontal layout
