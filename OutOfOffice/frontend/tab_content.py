@@ -2,6 +2,7 @@ from nicegui import events, ui # type: ignore
 import requests # type: ignore
 from datetime import datetime
 from fullcalendar import FullCalendar as fullcalendar
+import get_items
 
 def last_year_content() -> None:
     ui.label('2023 content')
@@ -10,8 +11,7 @@ def previous_year_content() -> None:
     ui.label('2022 content')
 
 def current_year_content() -> None:
-    response = requests.get('http://127.0.0.1:8000/database/items/')
-    items = response.json().get('items', [])
+    items = get_items.get_items()
     columns = [
         {'name': 'name', 'label': 'Name', 'field': 'name', 'align': 'left'},
         {'name': 'date', 'label': 'Date', 'field': 'date'},
