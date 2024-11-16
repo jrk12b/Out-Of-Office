@@ -1,8 +1,8 @@
 from nicegui import events, ui # type: ignore
 import requests # type: ignore
 from datetime import datetime
-from fullcalendar import FullCalendar as fullcalendar
-import get_items
+from components.fullcalendar import FullCalendar as fullcalendar
+from components import get_items
 
 def last_year_content() -> None:
     ui.label('2023 content')

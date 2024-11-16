@@ -1,12 +1,8 @@
 from nicegui import events, ui # type: ignore
-from fullcalendar import FullCalendar as fullcalendar
-from datetime import datetime
-import requests # type: ignore
 from django.middleware.csrf import get_token # type: ignore
-import footer
-from header_drawer import create_header_and_drawer
-import tab_content
-import get_items
+from components import footer
+from components.header_drawer import create_header_and_drawer
+from components import tab_content
 
 ui.add_head_html("""
     <style>
