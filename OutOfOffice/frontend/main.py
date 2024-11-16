@@ -6,6 +6,19 @@ from components import tab_content
 
 ui.add_head_html("""
     <style>
+        /* Remove padding from the page container when the drawer is open */
+        .q-page-container {
+            transition: padding-left 0.3s ease; /* Optional: Add a transition effect */
+        }
+
+        .q-page-container.left-drawer-open {
+            padding-left: 0 !important; /* Remove the 300px padding when the drawer is open */
+        }
+
+        /* Ensure no padding is applied when the drawer is closed */
+        .q-page-container:not(.left-drawer-open) {
+            padding-left: 0 !important;
+        }
     </style>
 """)
 

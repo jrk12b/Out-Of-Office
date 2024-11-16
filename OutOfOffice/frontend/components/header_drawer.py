@@ -1,5 +1,13 @@
 from nicegui import ui # type: ignore
 
+ui.add_head_html("""
+    <style>
+        .q-drawer {
+            background-color: #D3D3D3;
+        }
+    </style>
+""")
+
 def create_header_and_drawer():
     # Create header with menu button and tabs
     with ui.header().classes(replace='row items-center') as header:
