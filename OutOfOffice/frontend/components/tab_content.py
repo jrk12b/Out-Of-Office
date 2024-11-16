@@ -48,12 +48,11 @@ def current_year_content() -> None:
         with requests.Session() as session:
             csrf_response = session.get('http://127.0.0.1:8000/database/get-csrf-token/')
             csrf_token = csrf_response.json().get('csrfToken')
-            new_id = max((dx['id'] for dx in rows), default=-1) + 1
-            new_row = {'id': new_id, 'name': 'New PTO', 'date': '2024-11-21'}  # example date format
+            new_row = {'name': 'New PTO', 'date': '2024-11-21'}  # example date format, no need for 'id'
             headers = {
-                'X-CSRFToken': csrf_token,  # Use the CSRF token in headers
+                'X-CSRFToken': csrf_token,
                 'Content-Type': 'application/json'
-                }
+            }
 
             try:
                 # Send POST request to add the new row to the database
@@ -63,11 +62,12 @@ def current_year_content() -> None:
                 if response.status_code == 201:  # assuming 201 Created is returned for success
                     # Get the row data (including DB-generated ID if applicable)
                     db_row = response.json()  # Assume the response contains the created row with 'id'
-                    new_row['id'] = db_row.get('id', new_id)  # Update with DB ID if available
+                    new_row['id'] = db_row.get('id')  # Update with DB ID if available
 
                     # Add row to table
                     rows.append(new_row)
                     ui.notify(f'Added new row with ID {new_row["id"]}')
+                    
                     # Add event to calendar
                     calendar_event = {
                         'title': new_row['name'],
