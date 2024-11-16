@@ -6,6 +6,7 @@ from django.middleware.csrf import get_token # type: ignore
 import footer
 from header_drawer import create_header_and_drawer
 import tab_content
+import get_items
 
 ui.add_head_html("""
     <style>
@@ -16,8 +17,7 @@ header, tabs, left_drawer = create_header_and_drawer()
 
 footer.content()
 
-response = requests.get('http://127.0.0.1:8000/database/items/')
-items = response.json().get('items', [])
+items = get_items.get_items()
 
 with ui.tab_panels(tabs, value='2024').classes('w-full'):
     columns = [
