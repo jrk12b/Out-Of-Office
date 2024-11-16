@@ -50,6 +50,27 @@ class FullCalendar(Element, component='fullcalendar.js'):
         self.update()
         self.run_method('update_calendar')
 
+    def update_event(self, old_title: str, new_title: Optional[str] = None, new_start: Optional[str] = None, new_end: Optional[str] = None) -> None:
+        """Update an existing event in the calendar.
+
+        :param old_title: Title of the existing event to update.
+        :param new_title: New title for the event (optional).
+        :param new_start: New start time for the event (optional).
+        :param new_end: New end time for the event (optional).
+        """
+        for event in self._props['options']['events']:
+            if event['title'] == old_title:
+                if new_title:
+                    event['title'] = new_title
+                if new_start:
+                    event['start'] = new_start
+                if new_end:
+                    event['end'] = new_end
+                break
+
+        self.update()
+        self.run_method('update_calendar')
+
     @property
     def events(self) -> List[Dict]:
         """List of events currently displayed in the calendar."""

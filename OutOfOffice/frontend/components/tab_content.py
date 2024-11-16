@@ -98,12 +98,31 @@ def current_year_content() -> None:
         # Get the updated values from the event arguments
         updated_row = e.args
         row_id = updated_row['id']
-        
         # Find the row in the frontend table
-        for row in rows:
-            if row['id'] == row_id:
-                row.update(updated_row)  # Update the row in the frontend table
-        
+        row_to_update = next((row for row in rows if row['id'] == row_id), None)
+        if not row_to_update:
+            ui.notify("Row not found", color="red")
+            return
+
+        old_name = row_to_update['name']
+        old_date = row_to_update['date']
+
+        # Update the row in the frontend table
+        row_to_update.update(updated_row)
+
+        # Update the corresponding calendar event
+        old_event_title = old_name
+        new_event_title = updated_row['name']
+        new_event_start = f"{updated_row['date']} 08:00:00"
+        new_event_end = f"{updated_row['date']} 17:00:00"
+
+        calendar.update_event(
+            old_title=old_event_title,
+            new_title=new_event_title,
+            new_start=new_event_start,
+            new_end=new_event_end,
+        )
+
         # Prepare the data to be sent to the backend for updating the database
         data = {
             'name': updated_row['name'],
@@ -124,7 +143,6 @@ def current_year_content() -> None:
             try:
                 response = session.patch(f'http://127.0.0.1:8000/database/items/{row_id}/update/', json=data, headers=headers)
                 if response.status_code == 200:
-                    # If update was successful, update the frontend table
                     updated_item = response.json()
                     ui.notify(f'Updated item with ID {updated_item["id"]}')
                     table.update()
