@@ -68,6 +68,13 @@ def current_year_content() -> None:
                     # Add row to table
                     rows.append(new_row)
                     ui.notify(f'Added new row with ID {new_row["id"]}')
+                    # Add event to calendar
+                    calendar_event = {
+                        'title': new_row['name'],
+                        'start': f"{new_row['date']} 08:00:00",  # Adjust start time
+                        'end': f"{new_row['date']} 17:00:00",    # Adjust end time
+                    }
+                    calendar.add_event(**calendar_event)  # Add to the FullCalendar
                     table.update()
                     update_pto_planned()
                 else:
@@ -181,7 +188,7 @@ def current_year_content() -> None:
 
                 # Calendar and additional label below the PTO cards but next to the table
                 with ui.column().classes('gap-2'):
-                    fullcalendar(options, on_click=handle_click).classes('ml-10 mt-5').style('min-width: 400px; max-width: 800px; height: 500px;')
+                    calendar = fullcalendar(options, on_click=handle_click).classes('ml-10 mt-5').style('min-width: 400px; max-width: 800px; height: 500px;')
 
     update_pto_planned()
     update_pto_remaining()
