@@ -4,8 +4,7 @@ from django.contrib.auth.forms import AuthenticationForm # type: ignore
 from django.contrib import messages # type: ignore
 from django.contrib.auth.decorators import login_required # type: ignore
 from django.contrib.auth.forms import UserCreationForm # type: ignore
-
-# Create your views here.
+from django.http import JsonResponse # type: ignore
 
 def user_login(request):
     if request.method == 'POST':
@@ -14,7 +13,9 @@ def user_login(request):
             user = form.get_user()
             login(request, user)  # Starts the session for the user
             messages.success(request, 'Login successful!')
-            return redirect('dashboard')  # Redirect to a dashboard or home page
+
+            # Redirect to NiceGUI frontend
+            return redirect('http://127.0.0.1:8080/')
         else:
             messages.error(request, 'Invalid credentials')
     else:
@@ -24,7 +25,7 @@ def user_login(request):
 
 def user_logout(request):
     logout(request)  # Ends the user session
-    return redirect('login')  # Redirect to login page
+    return redirect('http://127.0.0.1:8000/accounts/login/')  # Redirect to login page
 
 def dashboard(request):
     return render(request, 'dashboard.html')
@@ -43,3 +44,8 @@ def user_register(request):
         form = UserCreationForm()
 
     return render(request, 'templates/register.html', {'form': form})
+
+@login_required
+def is_authenticated(request):
+    """Return 200 OK if the user is authenticated."""
+    return JsonResponse({'authenticated': True})

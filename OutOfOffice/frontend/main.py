@@ -1,8 +1,10 @@
 from nicegui import events, ui # type: ignore
-from django.middleware.csrf import get_token # type: ignore
 from components import footer
 from components.header_drawer import create_header_and_drawer
 from components import tab_content
+from auth_middleware import authentication_guard
+
+authentication_guard()
 
 ui.add_head_html("""
     <style>
@@ -23,6 +25,10 @@ ui.add_head_html("""
 """)
 
 header, tabs, left_drawer = create_header_and_drawer()
+
+# Add a logout link in the header
+with header:
+    ui.link('Logout', 'http://127.0.0.1:8000/accounts/logout/').classes('text-white px-4') 
 
 footer.content()
 
