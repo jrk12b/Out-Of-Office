@@ -4,7 +4,9 @@ from components.header_drawer import create_header_and_drawer
 from components import tab_content
 from auth_middleware import authentication_guard
 
-authentication_guard()
+# Check authentication before initializing UI
+if not authentication_guard():
+    ui.run(port=8080)  # Redirect handled in middleware
 
 ui.add_head_html("""
     <style>

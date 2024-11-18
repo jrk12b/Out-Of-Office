@@ -30,7 +30,9 @@ ALLOWED_HOSTS = []
 
 CSRF_TRUSTED_ORIGINS = ['http://127.0.0.1:8000']
 
-LOGIN_URL = '/login/'
+LOGIN_URL = '/accounts/login/'  # URL for the login page
+LOGIN_REDIRECT_URL = '/'  # URL to redirect after successful login
+LOGOUT_REDIRECT_URL = '/accounts/login/'  # Redirect after logout
 
 # Application definition
 

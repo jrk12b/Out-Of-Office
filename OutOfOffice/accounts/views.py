@@ -45,7 +45,8 @@ def user_register(request):
 
     return render(request, 'templates/register.html', {'form': form})
 
-@login_required
 def is_authenticated(request):
     """Return 200 OK if the user is authenticated."""
-    return JsonResponse({'authenticated': True})
+    if request.user.is_authenticated:
+        return JsonResponse({'authenticated': True})
+    return JsonResponse({'authenticated': False}, status=401)
