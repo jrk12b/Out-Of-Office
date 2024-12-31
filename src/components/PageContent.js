@@ -1,15 +1,32 @@
 import React from 'react';
+import PTOPlannedCard from './PTOPlannedCard';
+import TotalPTOCard from './PTOTotalCard';
+import PTORemainingCard from './PTORemainingCard';
+import PTOCard from './PTOCard';
 
-const PageContent = ({ activeYear }) => {
-  const contentByYear = {
-    '2024': 'This is the content for 2024.',
-    '2023': 'This is the content for 2023.',
-    '2022': 'This is the content for 2022.',
-  };
+const PageContent = ({ activeYear, ptoList, totalPTO, addPTO, deletePTO }) => {
+  // Filter PTO list for the active year
+  const filteredPTOList = ptoList.filter((pto) => pto.pto_year === activeYear);
+
+  const ptoPlanned = filteredPTOList.length; // PTOs for the active year
+  const ptoRemaining = totalPTO - ptoPlanned;
 
   return (
     <main style={{ padding: '20px' }}>
-      <p>{contentByYear[activeYear]}</p>
+      <h3>{`Content for ${activeYear}`}</h3>
+      <PTOCard ptoList={filteredPTOList} addPTO={addPTO} deletePTO={deletePTO} />
+
+      <div
+        style={{
+          display: 'flex',
+          justifyContent: 'space-around',
+          marginTop: '20px',
+        }}
+      >
+        <PTOPlannedCard ptoCount={ptoPlanned} />
+        <TotalPTOCard totalPTO={totalPTO} />
+        <PTORemainingCard ptoRemaining={ptoRemaining} />
+      </div>
     </main>
   );
 };
