@@ -5,11 +5,23 @@ import PTORemainingCard from './PTORemainingCard';
 import PTOCard from './PTOCard';
 
 const PageContent = ({ activeYear, ptoList, addPTO, deletePTO }) => {
-  const [totalPTO, setTotalPTO] = useState(20); // Default Total PTO
+  const [totalPTOByYear, setTotalPTOByYear] = useState({
+    2023: 20,
+    2024: 18,
+  }); // Default PTO allotments by year
+
+  // Update the total PTO for a specific year
+  const updateTotalPTO = (year, value) => {
+    setTotalPTOByYear((prev) => ({
+      ...prev,
+      [year]: value,
+    }));
+  };
 
   // Filter PTO list for the active year
   const filteredPTOList = ptoList.filter((pto) => pto.pto_year === activeYear);
 
+  const totalPTO = totalPTOByYear[activeYear] || 0; // Default to 0 if no value exists for the year
   const ptoPlanned = filteredPTOList.length; // PTOs for the active year
   const ptoRemaining = totalPTO - ptoPlanned;
 
@@ -26,7 +38,10 @@ const PageContent = ({ activeYear, ptoList, addPTO, deletePTO }) => {
         }}
       >
         <PTOPlannedCard ptoCount={ptoPlanned} />
-        <TotalPTOCard totalPTO={totalPTO} setTotalPTO={setTotalPTO} />
+        <TotalPTOCard
+          totalPTO={totalPTO}
+          updateTotalPTO={(value) => updateTotalPTO(activeYear, value)}
+        />
         <PTORemainingCard ptoRemaining={ptoRemaining} />
       </div>
     </main>

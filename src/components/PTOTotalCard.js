@@ -1,12 +1,12 @@
 import React, { useState } from 'react';
 import { Card, Button, Form } from 'react-bootstrap';
 
-const TotalPTOCard = ({ totalPTO, setTotalPTO }) => {
+const TotalPTOCard = ({ totalPTO, updateTotalPTO }) => {
   const [isEditing, setIsEditing] = useState(false);
   const [newTotalPTO, setNewTotalPTO] = useState(totalPTO);
 
   const handleSave = () => {
-    setTotalPTO(newTotalPTO); // Update the total PTO
+    updateTotalPTO(newTotalPTO); // Update the total PTO for the active year
     setIsEditing(false); // Exit edit mode
   };
 
