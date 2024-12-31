@@ -1,14 +1,38 @@
-import React from 'react';
-import { Card } from 'react-bootstrap';
+import React, { useState } from 'react';
+import { Card, Button, Form } from 'react-bootstrap';
 
-const TotalPTOCard = ({ totalPTO }) => {
+const TotalPTOCard = ({ totalPTO, setTotalPTO }) => {
+  const [isEditing, setIsEditing] = useState(false);
+  const [newTotalPTO, setNewTotalPTO] = useState(totalPTO);
+
+  const handleSave = () => {
+    setTotalPTO(newTotalPTO); // Update the total PTO
+    setIsEditing(false); // Exit edit mode
+  };
+
   return (
     <Card style={{ width: '18rem', textAlign: 'center' }}>
       <Card.Header as="h5">Total PTO</Card.Header>
       <Card.Body>
-        <Card.Text>
-          <strong>{totalPTO}</strong> days.
-        </Card.Text>
+        {!isEditing ? (
+          <>
+            <Card.Text>
+              <strong>{totalPTO}</strong> days.
+            </Card.Text>
+            <Button onClick={() => setIsEditing(true)}>Edit</Button>
+          </>
+        ) : (
+          <>
+            <Form.Control
+              type="number"
+              value={newTotalPTO}
+              onChange={(e) => setNewTotalPTO(Number(e.target.value))}
+            />
+            <Button variant="success" onClick={handleSave} style={{ marginTop: '10px' }}>
+              Save
+            </Button>
+          </>
+        )}
       </Card.Body>
     </Card>
   );

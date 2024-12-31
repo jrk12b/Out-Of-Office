@@ -1,10 +1,12 @@
-import React from 'react';
+import React, { useState } from 'react';
 import PTOPlannedCard from './PTOPlannedCard';
 import TotalPTOCard from './PTOTotalCard';
 import PTORemainingCard from './PTORemainingCard';
 import PTOCard from './PTOCard';
 
-const PageContent = ({ activeYear, ptoList, totalPTO, addPTO, deletePTO }) => {
+const PageContent = ({ activeYear, ptoList, addPTO, deletePTO }) => {
+  const [totalPTO, setTotalPTO] = useState(20); // Default Total PTO
+
   // Filter PTO list for the active year
   const filteredPTOList = ptoList.filter((pto) => pto.pto_year === activeYear);
 
@@ -24,7 +26,7 @@ const PageContent = ({ activeYear, ptoList, totalPTO, addPTO, deletePTO }) => {
         }}
       >
         <PTOPlannedCard ptoCount={ptoPlanned} />
-        <TotalPTOCard totalPTO={totalPTO} />
+        <TotalPTOCard totalPTO={totalPTO} setTotalPTO={setTotalPTO} />
         <PTORemainingCard ptoRemaining={ptoRemaining} />
       </div>
     </main>
