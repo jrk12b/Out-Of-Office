@@ -1,136 +1,130 @@
-import React, { useState } from 'react';
-import { Card, Table, Button, Form, Row, Col } from 'react-bootstrap';
+import React, { useEffect, useState } from 'react';
+import axios from 'axios';
 
-const PTOCard = ({ ptoList, setPtoList }) => {
-  const [newPto, setNewPto] = useState({ name: '', date: '' });
-  const [editPto, setEditPto] = useState(null);
+const PTOCard = () => {
+  const [ptoData, setPtoData] = useState([]);
+  const [newPTO, setNewPTO] = useState({ name: '', date: '', pto_year: '' });
 
-  const handleAdd = () => {
-    if (newPto.name && newPto.date) {
-      setPtoList([...ptoList, { id: Date.now(), ...newPto }]);
-      setNewPto({ name: '', date: '' });
+  // Fetch PTO data from backend
+  useEffect(() => {
+    const fetchPTO = async () => {
+      try {
+        const response = await axios.get('http://localhost:8000/api/pto');
+        setPtoData(response.data);
+      } catch (error) {
+        console.error('Error fetching PTO data', error);
+      }
+    };
+
+    fetchPTO();
+  }, []);
+
+  // Handle form input changes
+  const handleInputChange = (e) => {
+    const { name, value } = e.target;
+    setNewPTO((prev) => ({ ...prev, [name]: value }));
+  };
+
+  // Add a new PTO item
+  const handleAddPTO = async (e) => {
+    e.preventDefault();
+    try {
+      const uniqueId = Date.now().toString(); // Generate unique ID for the new PTO
+      const response = await axios.post('http://localhost:8000/api/pto', { ...newPTO, unique_id: uniqueId });
+      setPtoData((prev) => [...prev, response.data]);
+      setNewPTO({ name: '', date: '', pto_year: '' }); // Clear form fields
+    } catch (error) {
+      console.error('Error adding PTO', error);
     }
   };
 
-  const handleEdit = (id) => {
-    const updatedList = ptoList.map((pto) =>
-      pto.id === id ? { ...pto, ...editPto } : pto
-    );
-    setPtoList(updatedList);
-    setEditPto(null);
-  };
-
-  const handleDelete = (id) => {
-    setPtoList(ptoList.filter((pto) => pto.id !== id));
+  // Delete a PTO item
+  const handleDeletePTO = async (id) => {
+    try {
+      await axios.delete(`http://localhost:8000/api/pto${id}`);
+      setPtoData((prev) => prev.filter((pto) => pto._id !== id));
+    } catch (error) {
+      console.error('Error deleting PTO', error);
+    }
   };
 
   return (
-    <Card style={{ width: '100%' }}>
-      <Card.Header>PTO List</Card.Header>
-      <Card.Body>
-        {/* PTO Table */}
-        <Table striped bordered hover>
-          <thead>
-            <tr>
-              <th>Name</th>
-              <th>Date</th>
-              <th>Actions</th>
-            </tr>
-          </thead>
-          <tbody>
-            {ptoList.map((pto) => (
-              <tr key={pto.id}>
-                <td>
-                  {editPto?.id === pto.id ? (
-                    <Form.Control
-                      type="text"
-                      value={editPto.name}
-                      onChange={(e) => setEditPto({ ...editPto, name: e.target.value })}
-                    />
-                  ) : (
-                    pto.name
-                  )}
-                </td>
-                <td>
-                  {editPto?.id === pto.id ? (
-                    <Form.Control
-                      type="date"
-                      value={editPto.date}
-                      onChange={(e) => setEditPto({ ...editPto, date: e.target.value })}
-                    />
-                  ) : (
-                    pto.date
-                  )}
-                </td>
-                <td>
-                  {editPto?.id === pto.id ? (
-                    <>
-                      <Button
-                        variant="success"
-                        size="sm"
-                        onClick={() => handleEdit(pto.id)}
-                      >
-                        Save
-                      </Button>{' '}
-                      <Button
-                        variant="secondary"
-                        size="sm"
-                        onClick={() => setEditPto(null)}
-                      >
-                        Cancel
-                      </Button>
-                    </>
-                  ) : (
-                    <>
-                      <Button
-                        variant="warning"
-                        size="sm"
-                        onClick={() => setEditPto(pto)}
-                      >
-                        Edit
-                      </Button>{' '}
-                      <Button
-                        variant="danger"
-                        size="sm"
-                        onClick={() => handleDelete(pto.id)}
-                      >
-                        Delete
-                      </Button>
-                    </>
-                  )}
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </Table>
+    <div className="card">
+      <div className="card-header">Days of PTO</div>
 
-        {/* Add New PTO */}
-        <Form className="mt-3">
-          <Row>
-            <Col>
-              <Form.Control
-                type="text"
-                placeholder="PTO Name"
-                value={newPto.name}
-                onChange={(e) => setNewPto({ ...newPto, name: e.target.value })}
-              />
-            </Col>
-            <Col>
-              <Form.Control
-                type="date"
-                value={newPto.date}
-                onChange={(e) => setNewPto({ ...newPto, date: e.target.value })}
-              />
-            </Col>
-            <Col>
-              <Button onClick={handleAdd} variant="primary">
-                Add PTO
-              </Button>
-            </Col>
-          </Row>
-        </Form>
-      </Card.Body>
-    </Card>
+      {/* PTO Table */}
+      <table className="table">
+        <thead>
+          <tr>
+            <th>Name</th>
+            <th>Date</th>
+            <th>Year</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          {ptoData.map((pto) => (
+            <tr key={pto.unique_id}>
+              <td>{pto.name}</td>
+              <td>{new Date(pto.date).toLocaleDateString()}</td>
+              <td>{pto.pto_year}</td>
+              <td>
+                <button
+                  className="btn btn-danger btn-sm"
+                  onClick={() => handleDeletePTO(pto._id)}
+                >
+                  Delete
+                </button>
+              </td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+
+      {/* Add PTO Form */}
+      <div className="card-body">
+        <h5>Add PTO Item</h5>
+        <form onSubmit={handleAddPTO}>
+          <div className="mb-3">
+            <label htmlFor="name" className="form-label">Name</label>
+            <input
+              type="text"
+              id="name"
+              name="name"
+              className="form-control"
+              value={newPTO.name}
+              onChange={handleInputChange}
+              required
+            />
+          </div>
+          <div className="mb-3">
+            <label htmlFor="date" className="form-label">Date</label>
+            <input
+              type="date"
+              id="date"
+              name="date"
+              className="form-control"
+              value={newPTO.date}
+              onChange={handleInputChange}
+              required
+            />
+          </div>
+          <div className="mb-3">
+            <label htmlFor="pto_year" className="form-label">Year</label>
+            <input
+              type="text"
+              id="pto_year"
+              name="pto_year"
+              className="form-control"
+              value={newPTO.pto_year}
+              onChange={handleInputChange}
+              required
+            />
+          </div>
+          <button type="submit" className="btn btn-primary">Add PTO</button>
+        </form>
+      </div>
+    </div>
   );
 };
 
