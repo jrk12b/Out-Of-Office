@@ -18,6 +18,30 @@ const PageContent = ({ activeYear, ptoList, addPTO, deletePTO }) => {
     }));
   };
 
+  // Update an existing PTO entry
+  const updatePTO = async (id, updatedPTO) => {
+    try {
+      const response = await fetch(`http://localhost:8000/api/pto/${id}`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(updatedPTO),
+      });
+
+      if (response.ok) {
+        const updatedList = ptoList.map((pto) =>
+          pto._id === id ? { ...pto, ...updatedPTO } : pto
+        );
+
+        // Update the PTO list with the new data
+        setTotalPTOByYear(updatedList);
+      } else {
+        console.error('Failed to update PTO');
+      }
+    } catch (error) {
+      console.error('Error updating PTO:', error);
+    }
+  };
+
   // Filter PTO list for the active year
   const filteredPTOList = ptoList.filter((pto) => pto.pto_year === activeYear);
 
@@ -27,8 +51,12 @@ const PageContent = ({ activeYear, ptoList, addPTO, deletePTO }) => {
 
   return (
     <main style={{ padding: '20px' }}>
-      <h3>{`Content for ${activeYear}`}</h3>
-      <PTOCard ptoList={filteredPTOList} addPTO={addPTO} deletePTO={deletePTO} />
+      <PTOCard
+        ptoList={filteredPTOList}
+        addPTO={addPTO}
+        deletePTO={deletePTO}
+        updatePTO={updatePTO} // Pass the updatePTO function
+      />
 
       <div
         style={{
