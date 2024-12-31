@@ -1,23 +1,7 @@
-import React, { useEffect, useState } from 'react';
-import axios from 'axios';
+import React, { useState } from 'react';
 
-const PTOCard = () => {
-  const [ptoData, setPtoData] = useState([]);
+const PTOCard = ({ ptoList, addPTO, deletePTO }) => {
   const [newPTO, setNewPTO] = useState({ name: '', date: '', pto_year: '' });
-
-  // Fetch PTO data from backend
-  useEffect(() => {
-    const fetchPTO = async () => {
-      try {
-        const response = await axios.get('http://localhost:8000/api/pto');
-        setPtoData(response.data);
-      } catch (error) {
-        console.error('Error fetching PTO data', error);
-      }
-    };
-
-    fetchPTO();
-  }, []);
 
   // Handle form input changes
   const handleInputChange = (e) => {
@@ -28,24 +12,14 @@ const PTOCard = () => {
   // Add a new PTO item
   const handleAddPTO = async (e) => {
     e.preventDefault();
-    try {
-      const uniqueId = Date.now().toString(); // Generate unique ID for the new PTO
-      const response = await axios.post('http://localhost:8000/api/pto', { ...newPTO, unique_id: uniqueId });
-      setPtoData((prev) => [...prev, response.data]);
-      setNewPTO({ name: '', date: '', pto_year: '' }); // Clear form fields
-    } catch (error) {
-      console.error('Error adding PTO', error);
-    }
+    const uniqueId = Date.now().toString(); // Generate unique ID for the new PTO
+    await addPTO({ ...newPTO, unique_id: uniqueId });
+    setNewPTO({ name: '', date: '', pto_year: '' }); // Clear form fields
   };
 
   // Delete a PTO item
   const handleDeletePTO = async (id) => {
-    try {
-      await axios.delete(`http://localhost:8000/api/pto${id}`);
-      setPtoData((prev) => prev.filter((pto) => pto._id !== id));
-    } catch (error) {
-      console.error('Error deleting PTO', error);
-    }
+    await deletePTO(id);
   };
 
   return (
@@ -63,8 +37,8 @@ const PTOCard = () => {
           </tr>
         </thead>
         <tbody>
-          {ptoData.map((pto) => (
-            <tr key={pto.unique_id}>
+          {ptoList.map((pto) => (
+            <tr key={pto._id}>
               <td>{pto.name}</td>
               <td>{new Date(pto.date).toLocaleDateString()}</td>
               <td>{pto.pto_year}</td>

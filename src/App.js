@@ -1,5 +1,6 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import 'bootstrap/dist/css/bootstrap.min.css';
+import axios from 'axios';
 import HeaderNavigation from './components/HeaderNavigation';
 import PageHeader from './components/PageHeader';
 import PageContent from './components/PageContent';
@@ -10,14 +11,45 @@ import PTORemainingCard from './components/PTORemainingCard';
 
 const App = () => {
   const [activeYear, setActiveYear] = useState('2024');
-  const [ptoList, setPtoList] = useState([
-    { id: 1, name: 'Vacation', date: '2024-01-15' },
-    { id: 2, name: 'Sick Leave', date: '2024-02-20' },
-  ]);
+  const [ptoList, setPtoList] = useState([]);
+  const totalPTO = 18;
 
-  const totalPTO = 18; // Fixed total PTO days
-  const ptoPlanned = ptoList.length;
-  const ptoRemaining = totalPTO - ptoPlanned;
+  // Fetch PTO items from the database
+  useEffect(() => {
+    const fetchPTO = async () => {
+      try {
+        const response = await axios.get('http://localhost:8000/api/pto'); // Adjust URL if needed
+        setPtoList(response.data);
+      } catch (error) {
+        console.error('Error fetching PTO data:', error);
+      }
+    };
+
+    fetchPTO();
+  }, []);
+
+  const ptoPlanned = ptoList.length; // Count of planned PTOs
+  const ptoRemaining = totalPTO - ptoPlanned; // Calculate remaining PTOs
+
+  // Add a new PTO item
+  const addPTO = async (newPTO) => {
+    try {
+      const response = await axios.post('http://localhost:8000/api/pto', newPTO);
+      setPtoList((prev) => [...prev, response.data]); // Update state with new PTO
+    } catch (error) {
+      console.error('Error adding PTO:', error);
+    }
+  };
+
+  // Delete a PTO item
+  const deletePTO = async (id) => {
+    try {
+      await axios.delete(`http://localhost:8000/api/pto/${id}`);
+      setPtoList((prev) => prev.filter((pto) => pto._id !== id)); // Remove deleted PTO
+    } catch (error) {
+      console.error('Error deleting PTO:', error);
+    }
+  };
 
   return (
     <>
@@ -33,7 +65,7 @@ const App = () => {
       {/* PTO Section */}
       <div style={{ margin: '20px' }}>
         {/* PTO Card */}
-        <PTOCard ptoList={ptoList} setPtoList={setPtoList} />
+        <PTOCard ptoList={ptoList} addPTO={addPTO} deletePTO={deletePTO} />
 
         {/* Cards Row */}
         <div
