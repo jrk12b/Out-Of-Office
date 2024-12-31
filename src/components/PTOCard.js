@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import '../App.css'
 
 const PTOCard = ({ ptoList, addPTO, updatePTO, deletePTO }) => {
   const [newPTO, setNewPTO] = useState({ name: '', date: '', pto_year: '' });
@@ -26,7 +27,11 @@ const PTOCard = ({ ptoList, addPTO, updatePTO, deletePTO }) => {
   // Edit an existing PTO item
   const handleEditPTO = (pto) => {
     setEditingPTO(pto); // Set the PTO to be edited
-    setNewPTO({ name: pto.name, date: pto.date, pto_year: pto.pto_year }); // Pre-fill the form
+    setNewPTO({
+      name: pto.name,
+      date: new Date(pto.date).toISOString().split('T')[0], // Format to yyyy-MM-dd
+      pto_year: pto.pto_year,
+    });
   };
 
   // Update an existing PTO item
@@ -40,7 +45,7 @@ const PTOCard = ({ ptoList, addPTO, updatePTO, deletePTO }) => {
   };
 
   return (
-    <div className="card">
+    <div className="card half-width-card">
       <div className="card-header">Days of PTO</div>
 
       {/* PTO Table */}
@@ -127,7 +132,7 @@ const PTOCard = ({ ptoList, addPTO, updatePTO, deletePTO }) => {
               type="button"
               className="btn btn-secondary"
               onClick={() => {
-                setEditingPTO(null); // Cancel edit mode
+                setEditingPTO(null);
                 setNewPTO({ name: '', date: '', pto_year: '' });
               }}
               style={{ marginLeft: '10px' }}

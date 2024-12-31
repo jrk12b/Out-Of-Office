@@ -36,3 +36,8 @@
     transform: rotate(360deg);
   }
 }
+
+.half-width-card {
+  width: 50%;
+  /* margin: 0 auto; Center the card horizontally */
+}

@@ -8,7 +8,7 @@ const PageContent = ({ activeYear, ptoList, addPTO, deletePTO }) => {
   const [totalPTOByYear, setTotalPTOByYear] = useState({
     2023: 20,
     2024: 18,
-  }); // Default PTO allotments by year
+  });
 
   // Update the total PTO for a specific year
   const updateTotalPTO = (year, value) => {
@@ -51,27 +51,26 @@ const PageContent = ({ activeYear, ptoList, addPTO, deletePTO }) => {
 
   return (
     <main style={{ padding: '20px' }}>
+      <div
+        style={{
+          display: 'flex',
+          justifyContent: 'space-around',
+          marginBottom: '20px',
+        }}
+      >
+        <TotalPTOCard
+          totalPTO={totalPTO}
+          updateTotalPTO={(value) => updateTotalPTO(activeYear, value)}
+        />
+        <PTOPlannedCard ptoCount={ptoPlanned} />
+        <PTORemainingCard ptoRemaining={ptoRemaining} />
+      </div>
       <PTOCard
         ptoList={filteredPTOList}
         addPTO={addPTO}
         deletePTO={deletePTO}
         updatePTO={updatePTO} // Pass the updatePTO function
       />
-
-      <div
-        style={{
-          display: 'flex',
-          justifyContent: 'space-around',
-          marginTop: '20px',
-        }}
-      >
-        <PTOPlannedCard ptoCount={ptoPlanned} />
-        <TotalPTOCard
-          totalPTO={totalPTO}
-          updateTotalPTO={(value) => updateTotalPTO(activeYear, value)}
-        />
-        <PTORemainingCard ptoRemaining={ptoRemaining} />
-      </div>
     </main>
   );
 };
