@@ -59,6 +59,7 @@ const PageContent = ({ activeYear, ptoList, addPTO, deletePTO }) => {
         }}
       >
         <TotalPTOCard
+          activeYear={activeYear}
           totalPTO={totalPTO}
           updateTotalPTO={(value) => updateTotalPTO(activeYear, value)}
         />

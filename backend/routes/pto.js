@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const PTO = require('../models/PTO'); // Assuming PTO is your Mongoose model
+const { PTO, PTOTotal } = require('../models/PTO');
 
 // GET all PTO items
 router.get('/', async (req, res) => {
@@ -77,6 +77,39 @@ router.put('/:id', async (req, res) => {
   } catch (err) {
     console.error(err.message);
     res.status(500).send('Server Error');
+  }
+});
+
+router.post('/pto-total', async (req, res) => {
+  const { activeYear, totalPTO } = req.body;
+
+  if (!activeYear || totalPTO === undefined) {
+    return res.status(400).json({ error: 'Year and totalPTO are required.' });
+  }
+
+  try {
+    const updatedTotal = await PTOTotal.findOneAndUpdate(
+      { activeYear },
+      { activeYear, totalPTO },
+      { upsert: true, new: true }
+    );
+    res.status(200).json(updatedTotal);
+  } catch (error) {
+    console.error('Error updating PTO total:', error);
+    res.status(500).json({ error: 'Error updating PTO total.' });
+  }
+});
+
+router.get('/pto-total/:activeYear', async (req, res) => {
+  const { activeYear } = req.params;
+  if (!activeYear) {
+    return res.status(400).json({ error: 'Year parameter is required' });
+  }
+  try {
+    const total = await PTOTotal.findOne({ activeYear: parseInt(activeYear) });
+    res.status(200).json(total || { activeYear, totalPTO: 0 });
+  } catch (error) {
+    res.status(500).json({ error: 'Error fetching PTO total' });
   }
 });
 

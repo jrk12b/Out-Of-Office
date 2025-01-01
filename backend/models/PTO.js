@@ -7,4 +7,13 @@ const PTOSchema = new mongoose.Schema({
   pto_year: { type: String, required: true },
 });
 
-module.exports = mongoose.model('PTO', PTOSchema);
+// Schema for total PTO per year
+const PTOTotalSchema = new mongoose.Schema({
+  activeYear: { type: Number, required: true, unique: true },
+  totalPTO: { type: Number, required: true },
+});
+
+module.exports = {
+  PTO: mongoose.model('PTO', PTOSchema),
+  PTOTotal: mongoose.model('PTOTotal', PTOTotalSchema),
+};
