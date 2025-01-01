@@ -8,6 +8,10 @@ import interactionPlugin from '@fullcalendar/interaction';
 import HeaderNavigation from './components/HeaderNavigation';
 import PageHeader from './components/PageHeader';
 import PageContent from './components/PageContent';
+import Logout from './components/Logout';
+import { BrowserRouter as Router, Route, Routes, Link } from 'react-router-dom';
+import Register from './components/Register'; // Import Register component
+import Login from './components/Login'; // Import Login component
 import './App.css';
 
 const App = () => {
@@ -15,6 +19,12 @@ const App = () => {
 	const [ptoList, setPtoList] = useState([]);
 	const calendarRef = useRef(null);
 	const totalPTO = 18;
+	const [isLoggedIn, setIsLoggedIn] = useState(false);
+
+	// Function to handle login state change
+	const handleLogin = () => {
+		setIsLoggedIn(true);
+	};
 
 	useEffect(() => {
 		const fetchPTO = async () => {
@@ -64,29 +74,52 @@ const App = () => {
 	};
 
 	return (
-		<>
+		<Router>
 			<HeaderNavigation activeYear={activeYear} setActiveYear={setActiveYear} />
 			<PageHeader activeYear={activeYear} />
-			<PageContent
-				activeYear={activeYear}
-				ptoList={ptoList}
-				totalPTO={totalPTO}
-				addPTO={addPTO}
-				deletePTO={deletePTO}
-			/>
-			<div className="calendar-container">
-				<FullCalendar
-					ref={calendarRef}
-					plugins={[multiMonthPlugin, dayGridPlugin, interactionPlugin]}
-					initialView="multiMonthYear"
-					initialDate={`${activeYear}-01-01`}
-					editable={true}
-					events={calendarEvents}
-					timeZone="UTC"
-					height="auto"
+			<Routes>
+				{/* Route for Register page */}
+				<Route path="/register" element={<Register />} />
+				{/* Route for Login page */}
+				<Route path="/login" element={<Login onLogin={handleLogin} />} />{' '}
+				{/* Pass onLogin as prop */}
+				{/* Main App Route */}
+				<Route
+					path="/"
+					element={
+						isLoggedIn ? (
+							<>
+								<PageContent
+									activeYear={activeYear}
+									ptoList={ptoList}
+									totalPTO={totalPTO}
+									addPTO={addPTO}
+									deletePTO={deletePTO}
+								/>
+								<div className="calendar-container">
+									<FullCalendar
+										ref={calendarRef}
+										plugins={[multiMonthPlugin, dayGridPlugin, interactionPlugin]}
+										initialView="multiMonthYear"
+										initialDate={`${activeYear}-01-01`}
+										editable={true}
+										events={calendarEvents}
+										timeZone="UTC"
+										height="auto"
+									/>
+								</div>
+								<Logout /> {/* Show Logout component */}
+							</>
+						) : (
+							<div>
+								<h2>Please log in to access the app</h2>
+								<Link to="/login">Go to Login</Link> {/* Link to login page */}
+							</div>
+						)
+					}
 				/>
-			</div>
-		</>
+			</Routes>
+		</Router>
 	);
 };
 
