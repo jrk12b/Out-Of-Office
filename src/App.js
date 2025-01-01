@@ -8,10 +8,9 @@ import interactionPlugin from '@fullcalendar/interaction';
 import HeaderNavigation from './components/HeaderNavigation';
 import PageHeader from './components/PageHeader';
 import PageContent from './components/PageContent';
-import Logout from './components/Logout';
 import { BrowserRouter as Router, Route, Routes, Link } from 'react-router-dom';
-import Register from './components/Register'; // Import Register component
-import Login from './components/Login'; // Import Login component
+import Register from './components/Register';
+import Login from './components/Login';
 import './App.css';
 
 const App = () => {
@@ -21,9 +20,12 @@ const App = () => {
 	const totalPTO = 18;
 	const [isLoggedIn, setIsLoggedIn] = useState(false);
 
-	// Function to handle login state change
 	const handleLogin = () => {
 		setIsLoggedIn(true);
+	};
+
+	const handleLogout = () => {
+		setIsLoggedIn(false);
 	};
 
 	useEffect(() => {
@@ -39,14 +41,6 @@ const App = () => {
 		fetchPTO();
 	}, []);
 
-	useEffect(() => {
-		if (calendarRef.current) {
-			const calendarApi = calendarRef.current.getApi();
-			calendarApi.gotoDate(`${activeYear}-01-01`);
-		}
-	}, [activeYear]);
-
-	// Convert PTO list to calendar event format
 	const calendarEvents = ptoList
 		.filter((pto) => pto.date.startsWith(activeYear))
 		.map((pto) => ({
@@ -75,15 +69,15 @@ const App = () => {
 
 	return (
 		<Router>
-			<HeaderNavigation activeYear={activeYear} setActiveYear={setActiveYear} />
+			<HeaderNavigation
+				activeYear={activeYear}
+				setActiveYear={setActiveYear}
+				onLogout={handleLogout} // Pass the handleLogout function here
+			/>
 			<PageHeader activeYear={activeYear} />
 			<Routes>
-				{/* Route for Register page */}
 				<Route path="/register" element={<Register />} />
-				{/* Route for Login page */}
-				<Route path="/login" element={<Login onLogin={handleLogin} />} />{' '}
-				{/* Pass onLogin as prop */}
-				{/* Main App Route */}
+				<Route path="/login" element={<Login onLogin={handleLogin} />} />
 				<Route
 					path="/"
 					element={
@@ -108,12 +102,11 @@ const App = () => {
 										height="auto"
 									/>
 								</div>
-								<Logout /> {/* Show Logout component */}
 							</>
 						) : (
 							<div>
 								<h2>Please log in to access the app</h2>
-								<Link to="/login">Go to Login</Link> {/* Link to login page */}
+								<Link to="/login">Go to Login</Link>
 							</div>
 						)
 					}

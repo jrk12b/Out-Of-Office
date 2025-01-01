@@ -1,18 +1,22 @@
 import React from 'react';
-import axios from 'axios';
+import { useNavigate } from 'react-router-dom';
 
 const Logout = ({ onLogout }) => {
-	const handleLogout = async () => {
-		try {
-			// Make a request to the backend logout route
-			await axios.post('http://localhost:8000/api/auth/logout');
-			onLogout(); // Update the app state to reflect logout (clear any logged-in state)
-		} catch (error) {
-			console.error('Error logging out:', error);
-		}
+	const navigate = useNavigate();
+
+	const handleLogout = () => {
+		// Call the logout function passed as a prop to reset the login state
+		onLogout();
+
+		// Optionally, redirect the user to the login page after logout
+		navigate('/login');
 	};
 
-	return <button onClick={handleLogout}>Logout</button>;
+	return (
+		<button onClick={handleLogout} className="btn btn-danger">
+			Logout
+		</button>
+	);
 };
 
 export default Logout;

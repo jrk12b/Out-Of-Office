@@ -1,7 +1,18 @@
 import React from 'react';
-import { Navbar, Nav, Container } from 'react-bootstrap';
+import { Navbar, Nav, Container, Button } from 'react-bootstrap';
+import { useNavigate } from 'react-router-dom';
 
-const HeaderNavigation = ({ activeYear, setActiveYear }) => {
+const HeaderNavigation = ({ activeYear, setActiveYear, onLogout }) => {
+	const navigate = useNavigate();
+
+	const handleLogout = () => {
+		// Call the onLogout function passed as a prop to reset the login state
+		onLogout();
+
+		// Optionally, redirect the user to the login page after logout
+		navigate('/login');
+	};
+
 	return (
 		<Navbar bg="dark" variant="dark" expand="lg">
 			<Container>
@@ -19,6 +30,10 @@ const HeaderNavigation = ({ activeYear, setActiveYear }) => {
 							2022
 						</Nav.Link>
 					</Nav>
+					<Button variant="danger" onClick={handleLogout}>
+						Logout
+					</Button>{' '}
+					{/* Logout button */}
 				</Navbar.Collapse>
 			</Container>
 		</Navbar>
