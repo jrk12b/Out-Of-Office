@@ -80,6 +80,7 @@ router.put('/:id', async (req, res) => {
 	}
 });
 
+// POST/PUT for PTO total
 router.post('/pto-total', async (req, res) => {
 	const { activeYear, totalPTO } = req.body;
 
@@ -100,6 +101,7 @@ router.post('/pto-total', async (req, res) => {
 	}
 });
 
+// GET PTO total for a year
 router.get('/pto-total/:activeYear', async (req, res) => {
 	const { activeYear } = req.params;
 

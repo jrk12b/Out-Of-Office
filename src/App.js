@@ -36,6 +36,15 @@ const App = () => {
 		}
 	}, [activeYear]);
 
+	// Convert PTO list to calendar event format
+	const calendarEvents = ptoList
+		.filter((pto) => pto.date.startsWith(activeYear))
+		.map((pto) => ({
+			title: pto.name,
+			date: pto.date,
+			color: '#FF5733',
+		}));
+
 	const addPTO = async (newPTO) => {
 		try {
 			const response = await axios.post('http://localhost:8000/api/pto', newPTO);
@@ -67,12 +76,12 @@ const App = () => {
 			/>
 			<div className="calendar-container">
 				<FullCalendar
-					ref={calendarRef} // Attach the ref to the FullCalendar component
+					ref={calendarRef}
 					plugins={[multiMonthPlugin, dayGridPlugin, interactionPlugin]}
 					initialView="multiMonthYear"
 					initialDate={`${activeYear}-01-01`}
 					editable={true}
-					events="https://fullcalendar.io/api/demo-feeds/events.json"
+					events={calendarEvents}
 					timeZone="UTC"
 					height="auto"
 				/>
