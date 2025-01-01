@@ -11,10 +11,10 @@ const PageContent = ({ activeYear, ptoList, addPTO, deletePTO }) => {
   });
 
   // Update the total PTO for a specific year
-  const updateTotalPTO = (year, value) => {
+  const updateTotalPTO = (activeYear, value) => {
     setTotalPTOByYear((prev) => ({
       ...prev,
-      [year]: value,
+      [activeYear]: value,
     }));
   };
 
