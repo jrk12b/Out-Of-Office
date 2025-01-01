@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import axios from 'axios';
 import FullCalendar from '@fullcalendar/react';
@@ -13,6 +13,7 @@ import './App.css';
 const App = () => {
 	const [activeYear, setActiveYear] = useState('2024');
 	const [ptoList, setPtoList] = useState([]);
+	const calendarRef = useRef(null);
 	const totalPTO = 18;
 
 	useEffect(() => {
@@ -27,6 +28,13 @@ const App = () => {
 
 		fetchPTO();
 	}, []);
+
+	useEffect(() => {
+		if (calendarRef.current) {
+			const calendarApi = calendarRef.current.getApi();
+			calendarApi.gotoDate(`${activeYear}-01-01`);
+		}
+	}, [activeYear]);
 
 	const addPTO = async (newPTO) => {
 		try {
@@ -59,6 +67,7 @@ const App = () => {
 			/>
 			<div className="calendar-container">
 				<FullCalendar
+					ref={calendarRef} // Attach the ref to the FullCalendar component
 					plugins={[multiMonthPlugin, dayGridPlugin, interactionPlugin]}
 					initialView="multiMonthYear"
 					initialDate={`${activeYear}-01-01`}
