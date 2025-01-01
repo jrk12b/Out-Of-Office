@@ -6,7 +6,6 @@ import PTOCard from './PTOCard';
 
 const PageContent = ({ activeYear, ptoList, addPTO, deletePTO }) => {
   const [totalPTOByYear, setTotalPTOByYear] = useState({});
-  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const fetchTotalPTO = async () => {
@@ -14,7 +13,7 @@ const PageContent = ({ activeYear, ptoList, addPTO, deletePTO }) => {
         const response = await fetch(`http://localhost:8000/api/pto/pto-total/${activeYear}`);
         if (response.ok) {
           const data = await response.json();
-          // Set the total PTO for the active year in the state
+          // Update the total PTO for the active year in the state
           setTotalPTOByYear((prev) => ({
             ...prev,
             [activeYear]: data.totalPTO,
@@ -24,16 +23,13 @@ const PageContent = ({ activeYear, ptoList, addPTO, deletePTO }) => {
         }
       } catch (error) {
         console.error('Error fetching total PTO:', error);
-      } finally {
-        setLoading(false);
       }
     };
 
-    // Only fetch if the activeYear is valid and we are not already loading
-    if (activeYear && loading) {
-      fetchTotalPTO();
+    if (activeYear) {
+      fetchTotalPTO(); // Fetch total PTO data when activeYear changes
     }
-  }, [activeYear, loading]); // Re-run the effect if activeYear changes
+  }, [activeYear]); // Re-run the effect if activeYear changes
 
   // Update the total PTO for a specific year
   const updateTotalPTO = (activeYear, value) => {
@@ -71,12 +67,8 @@ const PageContent = ({ activeYear, ptoList, addPTO, deletePTO }) => {
   const filteredPTOList = ptoList.filter((pto) => pto.pto_year === activeYear);
 
   const totalPTO = totalPTOByYear[activeYear] || 0;
-  console.log('totalPTO: ' + totalPTO)
   const ptoPlanned = filteredPTOList.length;
-  console.log('ptoPlanned: ' + ptoPlanned)
   const ptoRemaining = totalPTO - ptoPlanned;
-  console.log('ptoRemaining: ' + ptoRemaining)
-  
 
   return (
     <main style={{ padding: '20px' }}>
