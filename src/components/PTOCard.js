@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import '../App.css'
+import '../App.css';
 
 const PTOCard = ({ ptoList, addPTO, updatePTO, deletePTO }) => {
   const [newPTO, setNewPTO] = useState({ name: '', date: '', pto_year: '' });
@@ -45,102 +45,114 @@ const PTOCard = ({ ptoList, addPTO, updatePTO, deletePTO }) => {
   };
 
   return (
-    <div className="card half-width-card">
-      <div className="card-header">Days of PTO</div>
-
-      {/* PTO Table */}
-      <table className="table">
-        <thead>
-          <tr>
-            <th>Name</th>
-            <th>Date</th>
-            <th>Year</th>
-            <th>Actions</th>
-          </tr>
-        </thead>
-        <tbody>
-          {ptoList.map((pto) => (
-            <tr key={pto._id}>
-              <td>{pto.name}</td>
-              <td>{new Date(pto.date).toLocaleDateString()}</td>
-              <td>{pto.pto_year}</td>
-              <td>
-                <button
-                  className="btn btn-warning btn-sm"
-                  onClick={() => handleEditPTO(pto)}
-                >
-                  Edit
-                </button>
-                <button
-                  className="btn btn-danger btn-sm"
-                  onClick={() => handleDeletePTO(pto._id)}
-                  style={{ marginLeft: '5px' }}
-                >
-                  Delete
-                </button>
-              </td>
-            </tr>
-          ))}
-        </tbody>
-      </table>
-
-      {/* Add or Edit PTO Form */}
-      <div className="card-body">
-        <h5>{editingPTO ? 'Edit PTO Item' : 'Add PTO Item'}</h5>
-        <form onSubmit={editingPTO ? handleUpdatePTO : handleAddPTO}>
-          <div className="mb-3">
-            <label htmlFor="name" className="form-label">Name</label>
-            <input
-              type="text"
-              id="name"
-              name="name"
-              className="form-control"
-              value={newPTO.name}
-              onChange={handleInputChange}
-              required
-            />
+    <div className="container">
+      <div className="row" style={{ display: 'flex', justifyContent: 'space-between' }}>
+        {/* Add or Edit PTO Form Card */}
+        <div className="col-md-5">
+                  <div className="card">
+                    <div className="card-header">
+                      {editingPTO ? 'Edit PTO Item' : 'Add PTO Item'}
+                    </div>
+                    <div className="card-body">
+                      <form onSubmit={editingPTO ? handleUpdatePTO : handleAddPTO}>
+                        <div className="mb-3">
+                          <label htmlFor="name" className="form-label">Name</label>
+                          <input
+                            type="text"
+                            id="name"
+                            name="name"
+                            className="form-control"
+                            value={newPTO.name}
+                            onChange={handleInputChange}
+                            required
+                          />
+                        </div>
+                        <div className="mb-3">
+                          <label htmlFor="date" className="form-label">Date</label>
+                          <input
+                            type="date"
+                            id="date"
+                            name="date"
+                            className="form-control"
+                            value={newPTO.date}
+                            onChange={handleInputChange}
+                            required
+                          />
+                        </div>
+                        <div className="mb-3">
+                          <label htmlFor="pto_year" className="form-label">Year</label>
+                          <input
+                            type="text"
+                            id="pto_year"
+                            name="pto_year"
+                            className="form-control"
+                            value={newPTO.pto_year}
+                            onChange={handleInputChange}
+                            required
+                          />
+                        </div>
+                        <button type="submit" className="btn btn-primary">
+                          {editingPTO ? 'Update PTO' : 'Add PTO'}
+                        </button>
+                        {editingPTO && (
+                          <button
+                            type="button"
+                            className="btn btn-secondary"
+                            onClick={() => {
+                              setEditingPTO(null);
+                              setNewPTO({ name: '', date: '', pto_year: '' });
+                            }}
+                            style={{ marginLeft: '10px' }}
+                          >
+                            Cancel
+                          </button>
+                        )}
+                      </form>
+                    </div>
+                  </div>
+                </div>
+        {/* PTO Table Card */}
+        <div className="col-md-6">
+          <div className="card">
+            <div className="card-header">Days of PTO</div>
+            <div className="card-body">
+              <table className="table">
+                <thead>
+                  <tr>
+                    <th>Name</th>
+                    <th>Date</th>
+                    <th>Year</th>
+                    <th>Actions</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {ptoList.map((pto) => (
+                    <tr key={pto._id}>
+                      <td>{pto.name}</td>
+                      <td>{new Date(pto.date).toLocaleDateString()}</td>
+                      <td>{pto.pto_year}</td>
+                      <td>
+                        <button
+                          className="btn btn-warning btn-sm"
+                          onClick={() => handleEditPTO(pto)}
+                        >
+                          Edit
+                        </button>
+                        <button
+                          className="btn btn-danger btn-sm"
+                          onClick={() => handleDeletePTO(pto._id)}
+                          style={{ marginLeft: '5px' }}
+                        >
+                          Delete
+                        </button>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
           </div>
-          <div className="mb-3">
-            <label htmlFor="date" className="form-label">Date</label>
-            <input
-              type="date"
-              id="date"
-              name="date"
-              className="form-control"
-              value={newPTO.date}
-              onChange={handleInputChange}
-              required
-            />
-          </div>
-          <div className="mb-3">
-            <label htmlFor="pto_year" className="form-label">Year</label>
-            <input
-              type="text"
-              id="pto_year"
-              name="pto_year"
-              className="form-control"
-              value={newPTO.pto_year}
-              onChange={handleInputChange}
-              required
-            />
-          </div>
-          <button type="submit" className="btn btn-primary">
-            {editingPTO ? 'Update PTO' : 'Add PTO'}
-          </button>
-          {editingPTO && (
-            <button
-              type="button"
-              className="btn btn-secondary"
-              onClick={() => {
-                setEditingPTO(null);
-                setNewPTO({ name: '', date: '', pto_year: '' });
-              }}
-              style={{ marginLeft: '10px' }}
-            >
-              Cancel
-            </button>
-          )}
-        </form>
+        </div>
       </div>
     </div>
   );
