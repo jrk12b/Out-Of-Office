@@ -1,9 +1,14 @@
 import React, { useState, useEffect } from 'react';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import axios from 'axios';
+import FullCalendar from '@fullcalendar/react';
+import multiMonthPlugin from '@fullcalendar/multimonth';
+import dayGridPlugin from '@fullcalendar/daygrid';
+import interactionPlugin from '@fullcalendar/interaction';
 import HeaderNavigation from './components/HeaderNavigation';
 import PageHeader from './components/PageHeader';
 import PageContent from './components/PageContent';
+import './App.css';
 
 const App = () => {
 	const [activeYear, setActiveYear] = useState('2024');
@@ -52,6 +57,17 @@ const App = () => {
 				addPTO={addPTO}
 				deletePTO={deletePTO}
 			/>
+			<div className="calendar-container">
+				<FullCalendar
+					plugins={[multiMonthPlugin, dayGridPlugin, interactionPlugin]}
+					initialView="multiMonthYear"
+					initialDate={`${activeYear}-01-01`}
+					editable={true}
+					events="https://fullcalendar.io/api/demo-feeds/events.json"
+					timeZone="UTC"
+					height="auto"
+				/>
+			</div>
 		</>
 	);
 };
