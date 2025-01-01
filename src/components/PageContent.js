@@ -1,14 +1,39 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import PTOPlannedCard from './PTOPlannedCard';
 import TotalPTOCard from './PTOTotalCard';
 import PTORemainingCard from './PTORemainingCard';
 import PTOCard from './PTOCard';
 
 const PageContent = ({ activeYear, ptoList, addPTO, deletePTO }) => {
-  const [totalPTOByYear, setTotalPTOByYear] = useState({
-    2023: 20,
-    2024: 18,
-  });
+  const [totalPTOByYear, setTotalPTOByYear] = useState({});
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchTotalPTO = async () => {
+      try {
+        const response = await fetch(`http://localhost:8000/api/pto/pto-total/${activeYear}`);
+        if (response.ok) {
+          const data = await response.json();
+          // Set the total PTO for the active year in the state
+          setTotalPTOByYear((prev) => ({
+            ...prev,
+            [activeYear]: data.totalPTO,
+          }));
+        } else {
+          console.error(`Failed to fetch PTO total for year ${activeYear}`);
+        }
+      } catch (error) {
+        console.error('Error fetching total PTO:', error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    // Only fetch if the activeYear is valid and we are not already loading
+    if (activeYear && loading) {
+      fetchTotalPTO();
+    }
+  }, [activeYear, loading]); // Re-run the effect if activeYear changes
 
   // Update the total PTO for a specific year
   const updateTotalPTO = (activeYear, value) => {
@@ -45,9 +70,13 @@ const PageContent = ({ activeYear, ptoList, addPTO, deletePTO }) => {
   // Filter PTO list for the active year
   const filteredPTOList = ptoList.filter((pto) => pto.pto_year === activeYear);
 
-  const totalPTO = totalPTOByYear[activeYear] || 0; // Default to 0 if no value exists for the year
-  const ptoPlanned = filteredPTOList.length; // PTOs for the active year
+  const totalPTO = totalPTOByYear[activeYear] || 0;
+  console.log('totalPTO: ' + totalPTO)
+  const ptoPlanned = filteredPTOList.length;
+  console.log('ptoPlanned: ' + ptoPlanned)
   const ptoRemaining = totalPTO - ptoPlanned;
+  console.log('ptoRemaining: ' + ptoRemaining)
+  
 
   return (
     <main style={{ padding: '20px' }}>

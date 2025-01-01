@@ -102,14 +102,17 @@ router.post('/pto-total', async (req, res) => {
 
 router.get('/pto-total/:activeYear', async (req, res) => {
   const { activeYear } = req.params;
-  if (!activeYear) {
-    return res.status(400).json({ error: 'Year parameter is required' });
-  }
+
   try {
-    const total = await PTOTotal.findOne({ activeYear: parseInt(activeYear) });
-    res.status(200).json(total || { activeYear, totalPTO: 0 });
+    const ptoTotal = await PTOTotal.findOne({ activeYear: activeYear });
+    if (ptoTotal) {
+      res.status(200).json(ptoTotal);
+    } else {
+      res.status(404).json({ error: `PTO total for year ${activeYear} not found` });
+    }
   } catch (error) {
-    res.status(500).json({ error: 'Error fetching PTO total' });
+    console.error('Error fetching PTO total:', error);
+    res.status(500).json({ error: 'Error fetching PTO total.' });
   }
 });
 
