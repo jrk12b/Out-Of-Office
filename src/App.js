@@ -20,15 +20,24 @@ const App = () => {
 	const totalPTO = 18;
 	const [isLoggedIn, setIsLoggedIn] = useState(false);
 
+	// Function to handle login state change
 	const handleLogin = () => {
 		setIsLoggedIn(true);
+		localStorage.setItem('isLoggedIn', 'true'); // Store login state in localStorage
 	};
 
 	const handleLogout = () => {
 		setIsLoggedIn(false);
+		localStorage.removeItem('isLoggedIn'); // Remove login state from localStorage
 	};
 
 	useEffect(() => {
+		// Check if the user is already logged in when the app is loaded or refreshed
+		const loggedIn = localStorage.getItem('isLoggedIn');
+		if (loggedIn === 'true') {
+			setIsLoggedIn(true);
+		}
+
 		const fetchPTO = async () => {
 			try {
 				const response = await axios.get('http://localhost:8000/api/pto');
@@ -40,6 +49,13 @@ const App = () => {
 
 		fetchPTO();
 	}, []);
+
+	useEffect(() => {
+		if (calendarRef.current) {
+			const calendarApi = calendarRef.current.getApi();
+			calendarApi.gotoDate(`${activeYear}-01-01`);
+		}
+	}, [activeYear]);
 
 	const calendarEvents = ptoList
 		.filter((pto) => pto.date.startsWith(activeYear))
@@ -72,7 +88,7 @@ const App = () => {
 			<HeaderNavigation
 				activeYear={activeYear}
 				setActiveYear={setActiveYear}
-				onLogout={handleLogout} // Pass the handleLogout function here
+				onLogout={handleLogout}
 			/>
 			<PageHeader activeYear={activeYear} />
 			<Routes>
