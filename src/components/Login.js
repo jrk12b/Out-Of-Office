@@ -11,10 +11,16 @@ const Login = ({ onLogin }) => {
 	const handleLogin = async (e) => {
 		e.preventDefault();
 		try {
-			const response = await axios.post('http://localhost:8000/api/auth/login', {
-				username,
-				password,
-			});
+			const response = await axios.post(
+				'http://localhost:8000/api/auth/login',
+				{
+					username,
+					password,
+				},
+				{
+					withCredentials: true, // This ensures cookies are sent with the request
+				}
+			);
 			setMessage('Login successful');
 			onLogin(); // Update the app state to reflect login
 			navigate('/'); // Navigate to the home page (main app)

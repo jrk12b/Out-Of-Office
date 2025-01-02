@@ -8,7 +8,12 @@ const app = express();
 app.use(express.json());
 
 // Enable CORS for all origins (you can restrict this later for security reasons)
-app.use(cors());
+app.use(
+	cors({
+		origin: 'http://localhost:3000', // Replace with your frontend's origin
+		credentials: true, // Enable credentials (cookies)
+	})
+);
 
 mongoose
 	.connect('mongodb+srv://justinkurdila:HZKZX2gW2XaLDM6u@cluster0.ja5jx.mongodb.net/pto', {
