@@ -1,4 +1,5 @@
 const express = require('express');
+const mongoose = require('mongoose');
 const router = express.Router();
 const { PTO, PTOTotal } = require('../models/PTO');
 
@@ -32,10 +33,18 @@ router.get('/:id', async (req, res) => {
 // POST a new PTO item
 router.post('/', async (req, res) => {
 	try {
-		const newPTO = new PTO(req.body);
+		// TODO: Need to grab the correct id from the current user
+		const userId = req.user?.id || new mongoose.Types.ObjectId('6775c6865bfc3ffa2522dd0a');
+
+		const newPTO = new PTO({
+			...req.body,
+			userId, // Add userId from backend logic
+		});
+
 		const savedPTO = await newPTO.save();
 		res.json(savedPTO);
 	} catch (err) {
+		console.error('Error saving PTO:', err);
 		res.status(500).send('Server Error');
 	}
 });
