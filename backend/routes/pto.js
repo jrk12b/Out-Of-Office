@@ -1,14 +1,17 @@
 const express = require('express');
-const mongoose = require('mongoose');
 const router = express.Router();
 const { PTO, PTOTotal } = require('../models/PTO');
+const authenticate = require('../middleware/authenticate');
 
-// GET all PTO items
-router.get('/', async (req, res) => {
+// GET all PTO items for the logged-in user
+router.get('/', authenticate, async (req, res) => {
 	try {
-		const ptoItems = await PTO.find();
+		// Fetch PTO items only for the current user
+		const userId = req.user.id; // `req.user` is set by the `authenticate` middleware
+		const ptoItems = await PTO.find({ userId }); // Filter by userId
 		res.json(ptoItems);
 	} catch (err) {
+		console.error('Error fetching PTO items:', err);
 		res.status(500).send('Server Error');
 	}
 });
@@ -31,14 +34,13 @@ router.get('/:id', async (req, res) => {
 });
 
 // POST a new PTO item
-router.post('/', async (req, res) => {
+router.post('/', authenticate, async (req, res) => {
 	try {
-		// TODO: Need to grab the correct id from the current user
-		const userId = req.user?.id || new mongoose.Types.ObjectId('6775c6865bfc3ffa2522dd0a');
+		const userId = req.user.id;
 
 		const newPTO = new PTO({
 			...req.body,
-			userId, // Add userId from backend logic
+			userId, // Automatically set the userId from the authenticated user
 		});
 
 		const savedPTO = await newPTO.save();

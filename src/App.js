@@ -40,7 +40,9 @@ const App = () => {
 
 		const fetchPTO = async () => {
 			try {
-				const response = await axios.get('http://localhost:8000/api/pto');
+				const response = await axios.get('http://localhost:8000/api/pto', {
+					withCredentials: true,
+				});
 				setPtoList(response.data);
 			} catch (error) {
 				console.error('Error fetching PTO data:', error);
@@ -67,7 +69,9 @@ const App = () => {
 
 	const addPTO = async (newPTO) => {
 		try {
-			const response = await axios.post('http://localhost:8000/api/pto', newPTO);
+			const response = await axios.post('http://localhost:8000/api/pto', newPTO, {
+				withCredentials: true,
+			});
 			setPtoList((prev) => [...prev, response.data]);
 		} catch (error) {
 			console.error('Error adding PTO:', error);
