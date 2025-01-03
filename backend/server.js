@@ -2,9 +2,11 @@ const express = require('express');
 const mongoose = require('mongoose');
 const cors = require('cors'); // Import cors
 const ptoRoutes = require('./routes/pto');
+const cookieParser = require('cookie-parser');
 const authRoutes = require('./routes/auth'); // Import authRoutes
 
 const app = express();
+app.use(cookieParser());
 app.use(express.json());
 
 // Enable CORS for all origins (you can restrict this later for security reasons)

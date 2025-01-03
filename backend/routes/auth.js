@@ -70,4 +70,20 @@ const authenticate = (req, res, next) => {
 	}
 };
 
+// Get current user's details
+router.get('/me', authenticate, async (req, res) => {
+	try {
+		const user = await User.findById(req.user.id); // req.user.id is set by the `authenticate` middleware
+		if (!user) return res.status(404).json({ error: 'User not found' });
+
+		res.status(200).json({
+			username: user.username,
+			userId: user._id,
+		});
+	} catch (err) {
+		console.error(err);
+		res.status(500).json({ error: 'Error fetching user details' });
+	}
+});
+
 module.exports = router;

@@ -1,9 +1,26 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { Navbar, Nav, Container, Button } from 'react-bootstrap';
 import { useNavigate } from 'react-router-dom';
+import axios from 'axios';
 
 const HeaderNavigation = ({ activeYear, setActiveYear, onLogout }) => {
 	const navigate = useNavigate();
+	const [user, setUser] = useState(null);
+
+	useEffect(() => {
+		const fetchUserData = async () => {
+			try {
+				const response = await axios.get('http://localhost:8000/api/auth/me', {
+					withCredentials: true,
+				});
+				setUser(response.data); // This will set the username and userId in state
+			} catch (error) {
+				console.error('Error fetching user data:', error);
+			}
+		};
+
+		fetchUserData();
+	}, []);
 
 	const handleLogout = () => {
 		// Call the onLogout function passed as a prop to reset the login state
@@ -30,10 +47,17 @@ const HeaderNavigation = ({ activeYear, setActiveYear, onLogout }) => {
 							2022
 						</Nav.Link>
 					</Nav>
+					{/* Display user info */}
+					{user && (
+						<Navbar.Text className="me-3">
+							<span>
+								{user.username} ({user.userId})
+							</span>
+						</Navbar.Text>
+					)}
 					<Button variant="danger" onClick={handleLogout}>
 						Logout
 					</Button>{' '}
-					{/* Logout button */}
 				</Navbar.Collapse>
 			</Container>
 		</Navbar>
