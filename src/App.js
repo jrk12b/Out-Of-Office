@@ -21,9 +21,17 @@ const App = () => {
 	const [isLoggedIn, setIsLoggedIn] = useState(false);
 
 	// Function to handle login state change
-	const handleLogin = () => {
+	const handleLogin = async () => {
 		setIsLoggedIn(true);
 		localStorage.setItem('isLoggedIn', 'true'); // Store login state in localStorage
+
+		// Fetch PTO data immediately after logging in
+		try {
+			const response = await axios.get('http://localhost:8000/api/pto', { withCredentials: true });
+			setPtoList(response.data);
+		} catch (error) {
+			console.error('Error fetching PTO data after login:', error);
+		}
 	};
 
 	const handleLogout = () => {
