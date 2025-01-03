@@ -13,21 +13,26 @@ const HeaderNavigation = ({ activeYear, setActiveYear, onLogout }) => {
 				const response = await axios.get('http://localhost:8000/api/auth/me', {
 					withCredentials: true,
 				});
-				setUser(response.data); // This will set the username and userId in state
+				setUser(response.data); // Update user state with data
 			} catch (error) {
 				console.error('Error fetching user data:', error);
+				setUser(null); // Clear user state if not authenticated
+				navigate('/login'); // Redirect to login if not authenticated
 			}
 		};
 
 		fetchUserData();
-	}, []);
+	}, [navigate]); // Run only on component mount
 
-	const handleLogout = () => {
-		// Call the onLogout function passed as a prop to reset the login state
-		onLogout();
-
-		// Optionally, redirect the user to the login page after logout
-		navigate('/login');
+	const handleLogout = async () => {
+		try {
+			await axios.post('http://localhost:8000/api/auth/logout', {}, { withCredentials: true });
+			setUser(null); // Clear user state after logout
+			onLogout(); // Notify parent about logout
+			navigate('/login'); // Redirect to login page
+		} catch (error) {
+			console.error('Error during logout:', error);
+		}
 	};
 
 	return (
@@ -47,17 +52,16 @@ const HeaderNavigation = ({ activeYear, setActiveYear, onLogout }) => {
 							2022
 						</Nav.Link>
 					</Nav>
-					{/* Display user info */}
 					{user && (
-						<Navbar.Text className="me-3">
-							<span>
+						<>
+							<Navbar.Text className="me-3">
 								{user.username} ({user.userId})
-							</span>
-						</Navbar.Text>
+							</Navbar.Text>
+							<Button variant="danger" onClick={handleLogout}>
+								Logout
+							</Button>
+						</>
 					)}
-					<Button variant="danger" onClick={handleLogout}>
-						Logout
-					</Button>{' '}
 				</Navbar.Collapse>
 			</Container>
 		</Navbar>

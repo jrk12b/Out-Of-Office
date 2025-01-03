@@ -88,7 +88,7 @@ const App = () => {
 			<HeaderNavigation
 				activeYear={activeYear}
 				setActiveYear={setActiveYear}
-				onLogout={handleLogout}
+				onLogout={handleLogout} // Pass handleLogout to HeaderNavigation
 			/>
 			<PageHeader activeYear={activeYear} />
 			<Routes>

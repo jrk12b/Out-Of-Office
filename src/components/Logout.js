@@ -7,14 +7,9 @@ const Logout = ({ onLogout }) => {
 
 	const handleLogout = async () => {
 		try {
-			// Send a request to the backend to clear the cookie
 			await axios.post('http://localhost:8000/api/auth/logout', {}, { withCredentials: true });
-
-			// Call the logout function passed as a prop to reset the login state
-			onLogout();
-
-			// Optionally, redirect the user to the login page after logout
-			navigate('/login');
+			onLogout(); // Notify parent about logout
+			navigate('/login'); // Redirect to login
 		} catch (error) {
 			console.error('Error during logout:', error);
 		}
