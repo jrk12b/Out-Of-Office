@@ -3,6 +3,7 @@ import PTOPlannedCard from './PTOPlannedCard';
 import TotalPTOCard from './PTOTotalCard';
 import PTORemainingCard from './PTORemainingCard';
 import PTOCard from './PTOCard';
+import axios from 'axios';
 
 const PageContent = ({ activeYear, ptoList, addPTO, deletePTO }) => {
 	const [totalPTOByYear, setTotalPTOByYear] = useState({});
@@ -10,17 +11,15 @@ const PageContent = ({ activeYear, ptoList, addPTO, deletePTO }) => {
 	useEffect(() => {
 		const fetchTotalPTO = async () => {
 			try {
-				const response = await fetch(`http://localhost:8000/api/pto/pto-total/${activeYear}`);
-				if (response.ok) {
-					const data = await response.json();
-					// Update the total PTO for the active year in the state
-					setTotalPTOByYear((prev) => ({
-						...prev,
-						[activeYear]: data.totalPTO,
-					}));
-				} else {
-					console.error(`Failed to fetch PTO total for year ${activeYear}`);
-				}
+				const response = await axios.get(`http://localhost:8000/api/pto/pto-total/${activeYear}`, {
+					withCredentials: true,
+				});
+
+				// Update the total PTO for the active year in the state
+				setTotalPTOByYear((prev) => ({
+					...prev,
+					[activeYear]: response.data.totalPTO, // Assuming response.data contains the PTO data
+				}));
 			} catch (error) {
 				console.error('Error fetching total PTO:', error);
 			}

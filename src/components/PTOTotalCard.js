@@ -11,7 +11,9 @@ const TotalPTOCard = ({ activeYear }) => {
 		const fetchTotalPTO = async () => {
 			if (!activeYear) return; // Ensure year is valid
 			try {
-				const response = await axios.get(`http://localhost:8000/api/pto/pto-total/${activeYear}`);
+				const response = await axios.get(`http://localhost:8000/api/pto/pto-total/${activeYear}`, {
+					withCredentials: true,
+				});
 				const fetchedTotalPTO = response.data.totalPTO || 0; // Default to 0 if not found
 				setTotalPTO(fetchedTotalPTO);
 				setNewTotalPTO(fetchedTotalPTO); // Sync newTotalPTO with the fetched value
@@ -30,10 +32,14 @@ const TotalPTOCard = ({ activeYear }) => {
 		}
 
 		try {
-			const response = await axios.post('http://localhost:8000/api/pto/pto-total', {
-				activeYear,
-				totalPTO: updatedTotal,
-			});
+			const response = await axios.post(
+				'http://localhost:8000/api/pto/pto-total',
+				{
+					activeYear,
+					totalPTO: updatedTotal,
+				},
+				{ withCredentials: true }
+			); // `withCredentials: true` ensures the token is sent along with the request
 			setTotalPTO(response.data.totalPTO);
 		} catch (error) {
 			console.error('Error updating total PTO:', error);

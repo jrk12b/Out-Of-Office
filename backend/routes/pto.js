@@ -92,17 +92,19 @@ router.put('/:id', async (req, res) => {
 });
 
 // POST/PUT for PTO total
-router.post('/pto-total', async (req, res) => {
+router.post('/pto-total', authenticate, async (req, res) => {
 	const { activeYear, totalPTO } = req.body;
+	const userId = req.user.id; // Assuming the user is authenticated and `req.user.id` contains the user ID.
 
 	if (!activeYear || totalPTO === undefined) {
 		return res.status(400).json({ error: 'Year and totalPTO are required.' });
 	}
 
 	try {
+		// Update or create the PTO total for the user and active year
 		const updatedTotal = await PTOTotal.findOneAndUpdate(
-			{ activeYear },
-			{ activeYear, totalPTO },
+			{ activeYear, userId }, // Find by userId and activeYear
+			{ activeYear, totalPTO, userId },
 			{ upsert: true, new: true }
 		);
 		res.status(200).json(updatedTotal);
@@ -113,15 +115,17 @@ router.post('/pto-total', async (req, res) => {
 });
 
 // GET PTO total for a year
-router.get('/pto-total/:activeYear', async (req, res) => {
+router.get('/pto-total/:activeYear', authenticate, async (req, res) => {
 	const { activeYear } = req.params;
+	const userId = req.user.id; // Assuming `req.user.id` contains the authenticated user's ID (e.g., from a JWT token or session).
 
 	try {
-		const ptoTotal = await PTOTotal.findOne({ activeYear: activeYear });
+		// Find the PTO total for the active year and logged-in user
+		const ptoTotal = await PTOTotal.findOne({ activeYear, userId });
 		if (ptoTotal) {
 			res.status(200).json(ptoTotal);
 		} else {
-			res.status(404).json({ error: `PTO total for year ${activeYear} not found` });
+			res.status(404).json({ error: `PTO total for year ${activeYear} not found for this user` });
 		}
 	} catch (error) {
 		console.error('Error fetching PTO total:', error);
