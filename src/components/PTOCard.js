@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import '../App.css';
 
 const PTOCard = ({ ptoList, addPTO, updatePTO, deletePTO }) => {
-	const [newPTO, setNewPTO] = useState({ name: '', date: '', pto_year: '' });
+	const [newPTO, setNewPTO] = useState({ name: '', date: '' });
 	const [editingPTO, setEditingPTO] = useState(null); // Track the PTO being edited
 
 	// Handle form input changes
@@ -16,7 +16,7 @@ const PTOCard = ({ ptoList, addPTO, updatePTO, deletePTO }) => {
 		e.preventDefault();
 		const uniqueId = Date.now().toString(); // Generate unique ID for the new PTO
 		await addPTO({ ...newPTO, unique_id: uniqueId });
-		setNewPTO({ name: '', date: '', pto_year: '' }); // Clear form fields
+		setNewPTO({ name: '', date: '' });
 	};
 
 	// Delete a PTO item
@@ -29,8 +29,8 @@ const PTOCard = ({ ptoList, addPTO, updatePTO, deletePTO }) => {
 		setEditingPTO(pto); // Set the PTO to be edited
 		setNewPTO({
 			name: pto.name,
-			date: new Date(pto.date).toISOString().split('T')[0], // Format to yyyy-MM-dd
-			pto_year: pto.pto_year,
+			date: new Date(pto.date).toISOString().split('T')[0],
+			// pto_year: pto.pto_year,
 		});
 	};
 
@@ -40,7 +40,7 @@ const PTOCard = ({ ptoList, addPTO, updatePTO, deletePTO }) => {
 		if (editingPTO) {
 			await updatePTO(editingPTO._id, newPTO); // Update the PTO item
 			setEditingPTO(null); // Exit edit mode
-			setNewPTO({ name: '', date: '', pto_year: '' }); // Clear form fields
+			setNewPTO({ name: '', date: '' }); // Clear form fields
 		}
 	};
 
@@ -81,20 +81,6 @@ const PTOCard = ({ ptoList, addPTO, updatePTO, deletePTO }) => {
 										required
 									/>
 								</div>
-								<div className="mb-3">
-									<label htmlFor="pto_year" className="form-label">
-										Year
-									</label>
-									<input
-										type="text"
-										id="pto_year"
-										name="pto_year"
-										className="form-control"
-										value={newPTO.pto_year}
-										onChange={handleInputChange}
-										required
-									/>
-								</div>
 								<button type="submit" className="btn btn-primary">
 									{editingPTO ? 'Update PTO' : 'Add PTO'}
 								</button>
@@ -104,7 +90,7 @@ const PTOCard = ({ ptoList, addPTO, updatePTO, deletePTO }) => {
 										className="btn btn-secondary"
 										onClick={() => {
 											setEditingPTO(null);
-											setNewPTO({ name: '', date: '', pto_year: '' });
+											setNewPTO({ name: '', date: '' });
 										}}
 										style={{ marginLeft: '10px' }}
 									>

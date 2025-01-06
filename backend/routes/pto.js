@@ -40,7 +40,7 @@ router.post('/', authenticate, async (req, res) => {
 
 		const newPTO = new PTO({
 			...req.body,
-			userId, // Automatically set the userId from the authenticated user
+			userId,
 		});
 
 		const savedPTO = await newPTO.save();
