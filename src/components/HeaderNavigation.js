@@ -38,7 +38,7 @@ const HeaderNavigation = ({ activeYear, setActiveYear, onLogout }) => {
 	return (
 		<Navbar bg="dark" variant="dark" expand="lg">
 			<Container>
-				<Navbar.Brand href="#home">Out Of Office</Navbar.Brand>
+				<Navbar.Brand href="/">Out Of Office</Navbar.Brand>
 				<Navbar.Toggle aria-controls="basic-navbar-nav" />
 				<Navbar.Collapse id="basic-navbar-nav">
 					<Nav className="me-auto">
@@ -51,6 +51,7 @@ const HeaderNavigation = ({ activeYear, setActiveYear, onLogout }) => {
 						<Nav.Link onClick={() => setActiveYear('2022')} active={activeYear === '2022'}>
 							2022
 						</Nav.Link>
+						<Nav.Link onClick={() => navigate('/map')}>Map</Nav.Link>
 					</Nav>
 					{user && (
 						<>

@@ -8,6 +8,7 @@ import interactionPlugin from '@fullcalendar/interaction';
 import HeaderNavigation from './components/HeaderNavigation';
 import PageHeader from './components/PageHeader';
 import PageContent from './components/PageContent';
+import Map from './components/Map';
 import { BrowserRouter as Router, Route, Routes, Link } from 'react-router-dom';
 import Register from './components/Register';
 import Login from './components/Login';
@@ -106,6 +107,7 @@ const App = () => {
 			<Routes>
 				<Route path="/register" element={<Register />} />
 				<Route path="/login" element={<Login onLogin={handleLogin} />} />
+				<Route path="/map" element={<Map />} />
 				<Route
 					path="/"
 					element={
