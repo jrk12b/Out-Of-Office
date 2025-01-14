@@ -36,7 +36,12 @@ router.post('/login', async (req, res) => {
 		if (!isMatch) return res.status(401).json({ error: 'Invalid credentials' });
 
 		const token = jwt.sign({ id: user._id }, JWT_SECRET, { expiresIn: '1h' });
-		res.cookie('token', token);
+		const isProduction = process.env.NODE_ENV === 'production';
+		res.cookie('token', token, {
+			httpOnly: true,
+			secure: isProduction,
+			sameSite: isProduction ? 'none' : 'lax', // 'none' for production, 'lax' for local
+		});
 		res.status(200).json({ message: 'Login successful' });
 	} catch (err) {
 		console.error(err);
