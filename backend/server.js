@@ -1,32 +1,48 @@
 const express = require('express');
 const mongoose = require('mongoose');
-const cors = require('cors'); // Import cors
+const cors = require('cors');
 const ptoRoutes = require('./routes/pto');
 const cookieParser = require('cookie-parser');
-const authRoutes = require('./routes/auth'); // Import authRoutes
+const { exec } = require('child_process');
+const authRoutes = require('./routes/auth');
 
-const app = express();
-app.use(cookieParser());
-app.use(express.json());
+const frontend = process.env.FRONTEND;
+if (frontend === 'true') {
+	exec('serve -s build', (error, stdout, stderr) => {
+		if (error) {
+			console.error(`Error executing command: ${error.message}`);
+			return;
+		}
+		if (stderr) {
+			console.error(`stderr: ${stderr}`);
+			return;
+		}
+		console.log(`stdout: ${stdout}`);
+	});
+} else {
+	const { PORT, MONGODB_URI } = require('../config.js');
+	const app = express();
+	app.use(cookieParser());
+	app.use(express.json());
 
-// Enable CORS for all origins (you can restrict this later for security reasons)
-app.use(
-	cors({
-		origin: 'http://localhost:3000', // Replace with your frontend's origin
-		credentials: true, // Enable credentials (cookies)
-	})
-);
+	// Enable CORS for all origins (you can restrict this later for security reasons)
+	app.use(
+		cors({
+			origin: 'http://localhost:3000',
+			credentials: true,
+		})
+	);
 
-mongoose
-	.connect('mongodb+srv://justinkurdila:HZKZX2gW2XaLDM6u@cluster0.ja5jx.mongodb.net/pto', {
-		useNewUrlParser: true,
-		useUnifiedTopology: true,
-	})
-	.then(() => console.log('Connected to MongoDB'))
-	.catch((err) => console.error('Error connecting to MongoDB', err));
+	mongoose
+		.connect(MONGODB_URI, {
+			useNewUrlParser: true,
+			useUnifiedTopology: true,
+		})
+		.then(() => console.log('Connected to MongoDB'))
+		.catch((err) => console.error('Error connecting to MongoDB', err));
 
-app.use('/api/pto', ptoRoutes);
-app.use('/api/auth', authRoutes); // This now works as expected
+	app.use('/api/pto', ptoRoutes);
+	app.use('/api/auth', authRoutes);
 
-const PORT = process.env.PORT || 8000;
-app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
+	app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
+}
