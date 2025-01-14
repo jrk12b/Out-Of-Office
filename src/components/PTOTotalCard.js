@@ -2,6 +2,8 @@ import React, { useState, useEffect } from 'react';
 import { Card, Button, Form } from 'react-bootstrap';
 import axios from 'axios';
 
+const { HOST } = require('../config.js');
+
 const TotalPTOCard = ({ activeYear }) => {
 	const [isEditing, setIsEditing] = useState(false);
 	const [totalPTO, setTotalPTO] = useState(0);
@@ -11,7 +13,7 @@ const TotalPTOCard = ({ activeYear }) => {
 		const fetchTotalPTO = async () => {
 			if (!activeYear) return; // Ensure year is valid
 			try {
-				const response = await axios.get(`http://localhost:8000/api/pto/pto-total/${activeYear}`, {
+				const response = await axios.get(`${HOST}/api/pto/pto-total/${activeYear}`, {
 					withCredentials: true,
 				});
 				const fetchedTotalPTO = response.data.totalPTO || 0; // Default to 0 if not found
@@ -33,7 +35,7 @@ const TotalPTOCard = ({ activeYear }) => {
 
 		try {
 			const response = await axios.post(
-				'http://localhost:8000/api/pto/pto-total',
+				`${HOST}/api/pto/pto-total`,
 				{
 					activeYear,
 					totalPTO: updatedTotal,

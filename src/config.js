@@ -1,7 +1,7 @@
 const PORT = process.env.PORT || 8000;
 const HOST =
 	process.env.NODE_ENV === 'production'
-		? 'https://time-of-day-db-cdee05bd35c4.herokuapp.com'
+		? 'https://out-of-office-db-437a4905f678.herokuapp.com/'
 		: `http://localhost:${PORT}`;
 const MONGODB_URI =
 	process.env.MONGODB_URI ||

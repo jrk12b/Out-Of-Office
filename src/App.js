@@ -14,6 +14,8 @@ import Register from './components/Register';
 import Login from './components/Login';
 import './App.css';
 
+const { HOST } = require('./config.js');
+
 const App = () => {
 	const [activeYear, setActiveYear] = useState('2024');
 	const [ptoList, setPtoList] = useState([]);
@@ -28,7 +30,7 @@ const App = () => {
 
 		// Fetch PTO data immediately after logging in
 		try {
-			const response = await axios.get('http://localhost:8000/api/pto', { withCredentials: true });
+			const response = await axios.get(`${HOST}/api/pto`, { withCredentials: true });
 			setPtoList(response.data);
 		} catch (error) {
 			console.error('Error fetching PTO data after login:', error);
@@ -49,7 +51,7 @@ const App = () => {
 
 		const fetchPTO = async () => {
 			try {
-				const response = await axios.get('http://localhost:8000/api/pto', {
+				const response = await axios.get(`${HOST}/api/pto`, {
 					withCredentials: true,
 				});
 				setPtoList(response.data);
@@ -78,7 +80,7 @@ const App = () => {
 
 	const addPTO = async (newPTO) => {
 		try {
-			const response = await axios.post('http://localhost:8000/api/pto', newPTO, {
+			const response = await axios.post(`${HOST}/api/pto`, newPTO, {
 				withCredentials: true,
 			});
 			setPtoList((prev) => [...prev, response.data]);
@@ -89,7 +91,7 @@ const App = () => {
 
 	const deletePTO = async (id) => {
 		try {
-			await axios.delete(`http://localhost:8000/api/pto/${id}`);
+			await axios.delete(`${HOST}api/pto/${id}`);
 			setPtoList((prev) => prev.filter((pto) => pto._id !== id));
 		} catch (error) {
 			console.error('Error deleting PTO:', error);

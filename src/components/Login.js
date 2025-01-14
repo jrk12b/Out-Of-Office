@@ -2,6 +2,8 @@ import React, { useState } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 
+const { HOST } = require('../config.js');
+
 const Login = ({ onLogin }) => {
 	const [username, setUsername] = useState('');
 	const [password, setPassword] = useState('');
@@ -12,7 +14,7 @@ const Login = ({ onLogin }) => {
 		e.preventDefault();
 		try {
 			const response = await axios.post(
-				'http://localhost:8000/api/auth/login',
+				`${HOST}/api/auth/login`,
 				{
 					username,
 					password,

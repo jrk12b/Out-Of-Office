@@ -3,6 +3,8 @@ import { Navbar, Nav, Container, Button } from 'react-bootstrap';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 
+const { HOST } = require('../config.js');
+
 const HeaderNavigation = ({ activeYear, setActiveYear, onLogout }) => {
 	const navigate = useNavigate();
 	const [user, setUser] = useState(null);
@@ -10,7 +12,7 @@ const HeaderNavigation = ({ activeYear, setActiveYear, onLogout }) => {
 	useEffect(() => {
 		const fetchUserData = async () => {
 			try {
-				const response = await axios.get('http://localhost:8000/api/auth/me', {
+				const response = await axios.get(`${HOST}/api/auth/me`, {
 					withCredentials: true,
 				});
 				setUser(response.data); // Update user state with data
@@ -26,7 +28,7 @@ const HeaderNavigation = ({ activeYear, setActiveYear, onLogout }) => {
 
 	const handleLogout = async () => {
 		try {
-			await axios.post('http://localhost:8000/api/auth/logout', {}, { withCredentials: true });
+			await axios.post(`${HOST}/api/auth/logout`, {}, { withCredentials: true });
 			setUser(null); // Clear user state after logout
 			onLogout(); // Notify parent about logout
 			navigate('/login'); // Redirect to login page

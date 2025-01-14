@@ -5,13 +5,15 @@ import PTORemainingCard from './PTORemainingCard';
 import PTOCard from './PTOCard';
 import axios from 'axios';
 
+const { HOST } = require('../config.js');
+
 const PageContent = ({ activeYear, ptoList, addPTO, deletePTO }) => {
 	const [totalPTOByYear, setTotalPTOByYear] = useState({});
 
 	useEffect(() => {
 		const fetchTotalPTO = async () => {
 			try {
-				const response = await axios.get(`http://localhost:8000/api/pto/pto-total/${activeYear}`, {
+				const response = await axios.get(`${HOST}/api/pto/pto-total/${activeYear}`, {
 					withCredentials: true,
 				});
 
@@ -41,7 +43,7 @@ const PageContent = ({ activeYear, ptoList, addPTO, deletePTO }) => {
 	// Update an existing PTO entry
 	const updatePTO = async (id, updatedPTO) => {
 		try {
-			const response = await fetch(`http://localhost:8000/api/pto/${id}`, {
+			const response = await fetch(`${HOST}/api/pto/${id}`, {
 				method: 'PUT',
 				headers: { 'Content-Type': 'application/json' },
 				body: JSON.stringify(updatedPTO),
