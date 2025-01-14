@@ -51,10 +51,13 @@ router.post('/login', async (req, res) => {
 
 // Logout route
 router.post('/logout', (req, res) => {
+	const isProduction = process.env.NODE_ENV === 'production';
 	res.clearCookie('token', {
 		httpOnly: true,
-		sameSite: 'Strict',
+		secure: isProduction,
+		sameSite: isProduction ? 'none' : 'lax',
 	});
+
 	res.status(200).json({ message: 'Logout successful' });
 });
 
