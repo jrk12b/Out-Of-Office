@@ -6,13 +6,18 @@ const { HOST } = require('../config.js');
 
 const Login = ({ onLogin }) => {
 	const [username, setUsername] = useState('');
+	console.log(`username: ${username}`);
 	const [password, setPassword] = useState('');
+	console.log(`password: ${username}`);
 	const [message, setMessage] = useState('');
 	const navigate = useNavigate();
 
 	const handleLogin = async (e) => {
 		e.preventDefault();
 		try {
+			console.log(`host: ${HOST}`);
+			console.log(`username2: ${username}`);
+			console.log(`password2: ${password}`);
 			const response = await axios.post(
 				`${HOST}/api/auth/login`,
 				{

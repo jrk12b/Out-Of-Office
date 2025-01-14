@@ -10,7 +10,8 @@ const router = express.Router();
 // Register a new user
 router.post('/register', async (req, res) => {
 	const { username, password } = req.body;
-
+	console.log(`username3: ${username}`);
+	console.log(`password: ${password}`);
 	try {
 		const existingUser = await User.findOne({ username });
 		if (existingUser) {
@@ -29,7 +30,8 @@ router.post('/register', async (req, res) => {
 // Login route
 router.post('/login', async (req, res) => {
 	const { username, password } = req.body;
-
+	console.log(`username3: ${username}`);
+	console.log(`password: ${password}`);
 	try {
 		const user = await User.findOne({ username });
 		if (!user) return res.status(404).json({ error: 'Invalid credentials' });
