@@ -20,7 +20,7 @@ if (frontend === 'true') {
 		console.log(`stdout: ${stdout}`);
 	});
 } else {
-	const { PORT, MONGODB_URI } = require('../config.js');
+	const { PORT, MONGODB_URI, CORS_ORIGIN } = require('../config.js');
 	const app = express();
 	app.use(cookieParser());
 	app.use(express.json());
@@ -28,7 +28,7 @@ if (frontend === 'true') {
 	// Enable CORS for all origins (you can restrict this later for security reasons)
 	app.use(
 		cors({
-			origin: 'http://localhost:3000',
+			origin: CORS_ORIGIN,
 			credentials: true,
 		})
 	);
