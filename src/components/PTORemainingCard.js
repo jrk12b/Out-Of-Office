@@ -3,10 +3,12 @@ import { Card } from 'react-bootstrap';
 
 const PTORemainingCard = ({ ptoRemaining }) => {
 	return (
-		<Card style={{ width: '18rem', textAlign: 'center' }}>
-			<Card.Header as="h5">PTO Remaining</Card.Header>
+		<Card className="remaining-pto-card">
+			<Card.Header as="h5" className="card-header">
+				PTO Remaining
+			</Card.Header>
 			<Card.Body>
-				<Card.Text>
+				<Card.Text className="card-text">
 					<strong>{ptoRemaining}</strong> days left.
 				</Card.Text>
 			</Card.Body>

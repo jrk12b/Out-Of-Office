@@ -3,10 +3,12 @@ import { Card } from 'react-bootstrap';
 
 const PTOPlannedCard = ({ ptoCount }) => {
 	return (
-		<Card style={{ width: '18rem', textAlign: 'center' }}>
-			<Card.Header as="h5">PTO Planned</Card.Header>
+		<Card className="planned-pto-card">
+			<Card.Header as="h5" className="card-header">
+				PTO Planned
+			</Card.Header>
 			<Card.Body>
-				<Card.Text>
+				<Card.Text className="card-text">
 					<strong>{ptoCount}</strong> PTO(s) planned.
 				</Card.Text>
 			</Card.Body>

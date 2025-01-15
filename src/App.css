@@ -1,49 +1,203 @@
-.App {
-	text-align: center;
+body {
+	background-color: #464646; /* Light gray background */
+	margin: 0; /* Removes default margin */
+	font-family: Arial, sans-serif; /* Optional: Set a consistent font */
 }
 
-.App-logo {
-	height: 40vmin;
-	pointer-events: none;
+main {
+	min-height: 100vh; /* Ensures content covers the full viewport height */
 }
 
-@media (prefers-reduced-motion: no-preference) {
-	.App-logo {
-		animation: App-logo-spin infinite 20s linear;
-	}
+.custom-navbar {
+	background-color: #282828 !important;
+	border-bottom: 1px solid #eaeaea;
+	transition: all 0.3s ease-in-out;
 }
 
-.App-header {
-	background-color: #282c34;
-	min-height: 100vh;
-	display: flex;
-	flex-direction: column;
-	align-items: center;
-	justify-content: center;
-	font-size: calc(10px + 2vmin);
+.brand-text {
+	font-weight: bold;
+	color: #007bff;
+	font-size: 1.5rem;
+}
+
+.brand-text:hover {
+	color: #0056b3;
+	text-decoration: none;
+}
+
+.year-link {
+	font-weight: 500;
+	color: white;
+	transition: color 0.2s ease-in-out;
+}
+
+.year-link.active {
+	color: #007bff !important;
+}
+.year-link:hover {
+	color: #007bff;
+}
+
+.nav-item-link {
+	font-weight: 500;
 	color: white;
 }
 
-.App-link {
-	color: #61dafb;
+.nav-item-link:hover {
+	color: #007bff;
 }
 
-@keyframes App-logo-spin {
-	from {
-		transform: rotate(0deg);
-	}
-	to {
-		transform: rotate(360deg);
-	}
+.user-toggle {
+	color: #ffffff;
+	background-color: #007bff;
+	border: none;
+	transition: background-color 0.2s ease-in-out;
 }
 
-.half-width-card {
-	width: 50%;
-	/* margin: 0 auto; Center the card horizontally */
+.user-toggle:hover {
+	background-color: #0056b3;
 }
 
-.calendar-container {
-	margin: 20px auto;
-	max-width: 80%;
+.user-dropdown .dropdown-menu {
+	border-radius: 5px;
+	box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.total-pto-card {
+	background-color: #1e1e1e;
+	color: white;
+	border: 1px solid #2c2c2c;
+	border-radius: 8px;
 	text-align: center;
+	box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
+	transition: transform 0.3s ease-in-out;
+}
+
+.total-pto-card:hover {
+	transform: translateY(-15px);
+}
+
+.card-header {
+	background-color: #282828;
+	color: #007bff;
+	font-weight: bold;
+	border-bottom: 1px solid #2c2c2c;
+}
+
+.card-text {
+	font-size: 1.25rem;
+	font-weight: 500;
+}
+
+.edit-btn,
+.save-btn {
+	background-color: #007bff;
+	color: white;
+	border: none;
+	transition: background-color 0.3s ease-in-out;
+	border-radius: 4px;
+}
+
+.edit-btn:hover,
+.save-btn:hover {
+	background-color: #0056b3;
+}
+
+.edit-input {
+	background-color: #282828;
+	color: white;
+	border: 1px solid #444;
+	border-radius: 4px;
+	padding: 10px;
+}
+
+.planned-pto-card {
+	background-color: #1e1e1e;
+	color: white;
+	border: 1px solid #2c2c2c;
+	border-radius: 8px;
+	text-align: center;
+	box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
+	transition: transform 0.3s ease-in-out;
+}
+
+.planned-pto-card:hover {
+	transform: translateY(-15px);
+}
+
+.card-header {
+	background-color: #282828;
+	color: #007bff;
+	font-weight: bold;
+	border-bottom: 1px solid #2c2c2c;
+}
+
+.card-text {
+	font-size: 1.25rem;
+	font-weight: 500;
+}
+
+.remaining-pto-card {
+	background-color: #1e1e1e;
+	color: white;
+	border: 1px solid #2c2c2c;
+	border-radius: 8px;
+	text-align: center;
+	box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
+	transition: transform 0.3s ease-in-out;
+}
+
+.remaining-pto-card:hover {
+	transform: translateY(-15px);
+}
+
+.card-header {
+	background-color: #282828;
+	color: #007bff;
+	font-weight: bold;
+	border-bottom: 1px solid #2c2c2c;
+}
+
+.card-text {
+	font-size: 1.25rem;
+	font-weight: 500;
+}
+
+.dark-card {
+	background-color: #1e1e1e;
+	color: white;
+	border: 1px solid #2c2c2c;
+	border-radius: 8px;
+	box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
+	transition: transform 0.3s ease-in-out;
+}
+
+.dark-card:hover {
+	transform: translateY(-5px);
+}
+
+.dark-card-header {
+	background-color: #282828;
+	color: #007bff;
+	font-weight: bold;
+}
+
+.dark-input {
+	background-color: #333333;
+	color: white;
+	border: 1px solid #555555;
+}
+
+.dark-table {
+	color: white;
+}
+
+.dark-table thead th {
+	background-color: #282828;
+	color: #007bff;
+	border-bottom: 1px solid #2c2c2c;
+}
+
+.dark-table tbody tr:hover {
+	background-color: #333333;
 }

@@ -30,7 +30,6 @@ const PTOCard = ({ ptoList, addPTO, updatePTO, deletePTO }) => {
 		setNewPTO({
 			name: pto.name,
 			date: new Date(pto.date).toISOString().split('T')[0],
-			// pto_year: pto.pto_year,
 		});
 	};
 
@@ -49,8 +48,10 @@ const PTOCard = ({ ptoList, addPTO, updatePTO, deletePTO }) => {
 			<div className="row" style={{ display: 'flex', justifyContent: 'space-between' }}>
 				{/* Add or Edit PTO Form Card */}
 				<div className="col-md-5">
-					<div className="card">
-						<div className="card-header">{editingPTO ? 'Edit PTO Item' : 'Add PTO Item'}</div>
+					<div className="card dark-card">
+						<div className="card-header dark-card-header">
+							{editingPTO ? 'Edit PTO Item' : 'Add PTO Item'}
+						</div>
 						<div className="card-body">
 							<form onSubmit={editingPTO ? handleUpdatePTO : handleAddPTO}>
 								<div className="mb-3">
@@ -61,7 +62,7 @@ const PTOCard = ({ ptoList, addPTO, updatePTO, deletePTO }) => {
 										type="text"
 										id="name"
 										name="name"
-										className="form-control"
+										className="form-control dark-input"
 										value={newPTO.name}
 										onChange={handleInputChange}
 										required
@@ -75,7 +76,7 @@ const PTOCard = ({ ptoList, addPTO, updatePTO, deletePTO }) => {
 										type="date"
 										id="date"
 										name="date"
-										className="form-control"
+										className="form-control dark-input"
 										value={newPTO.date}
 										onChange={handleInputChange}
 										required
@@ -103,10 +104,10 @@ const PTOCard = ({ ptoList, addPTO, updatePTO, deletePTO }) => {
 				</div>
 				{/* PTO Table Card */}
 				<div className="col-md-6">
-					<div className="card">
-						<div className="card-header">Days of PTO</div>
+					<div className="card dark-card">
+						<div className="card-header dark-card-header">Days of PTO</div>
 						<div className="card-body">
-							<table className="table">
+							<table className="table dark-table">
 								<thead>
 									<tr>
 										<th>Name</th>
