@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import axios from 'axios';
-import { useNavigate } from 'react-router-dom';
-import '../login.css';
+import { useNavigate, Link } from 'react-router-dom'; // Import Link
+import '../auth.css';
 
 const { HOST } = require('../config.js');
 
@@ -60,6 +60,16 @@ const Login = ({ onLogin }) => {
 					</button>
 				</form>
 				{message && <p className="message">{message}</p>}
+
+				{/* Register button */}
+				<div className="register-link">
+					<p>
+						Not a user?{' '}
+						<Link to="/register" className="btn btn-link">
+							Register here
+						</Link>
+					</p>
+				</div>
 			</div>
 		</div>
 	);

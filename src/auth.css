@@ -59,3 +59,16 @@
 	color: red; /* Error message in red */
 	text-align: center;
 }
+.register-link p {
+	text-align: center;
+	margin-top: 15px;
+}
+
+.register-link .btn-link {
+	color: #007bff;
+	text-decoration: none;
+}
+
+.register-link .btn-link:hover {
+	color: #0056b3;
+}
