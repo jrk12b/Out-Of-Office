@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
+import '../login.css';
 
 const { HOST } = require('../config.js');
 
@@ -15,17 +16,12 @@ const Login = ({ onLogin }) => {
 		try {
 			const response = await axios.post(
 				`${HOST}/api/auth/login`,
-				{
-					username,
-					password,
-				},
-				{
-					withCredentials: true, // This ensures cookies are sent with the request
-				}
+				{ username, password },
+				{ withCredentials: true }
 			);
 			setMessage('Login successful');
-			onLogin(); // Update the app state to reflect login
-			navigate('/'); // Navigate to the home page (main app)
+			onLogin();
+			navigate('/');
 		} catch (error) {
 			setMessage('Invalid credentials');
 			console.error(error);
@@ -33,30 +29,38 @@ const Login = ({ onLogin }) => {
 	};
 
 	return (
-		<div>
-			<h2>Login</h2>
-			<form onSubmit={handleLogin}>
-				<div>
-					<label>Username:</label>
-					<input
-						type="text"
-						value={username}
-						onChange={(e) => setUsername(e.target.value)}
-						required
-					/>
-				</div>
-				<div>
-					<label>Password:</label>
-					<input
-						type="password"
-						value={password}
-						onChange={(e) => setPassword(e.target.value)}
-						required
-					/>
-				</div>
-				<button type="submit">Login</button>
-			</form>
-			{message && <p>{message}</p>}
+		<div className="login-container">
+			<div className="login-form">
+				<h2>Login</h2>
+				<form onSubmit={handleLogin}>
+					<div className="form-group">
+						<label htmlFor="username">Username:</label>
+						<input
+							type="text"
+							id="username"
+							value={username}
+							onChange={(e) => setUsername(e.target.value)}
+							required
+							className="form-control"
+						/>
+					</div>
+					<div className="form-group">
+						<label htmlFor="password">Password:</label>
+						<input
+							type="password"
+							id="password"
+							value={password}
+							onChange={(e) => setPassword(e.target.value)}
+							required
+							className="form-control"
+						/>
+					</div>
+					<button type="submit" className="login-btn btn-primary">
+						Login
+					</button>
+				</form>
+				{message && <p className="message">{message}</p>}
+			</div>
 		</div>
 	);
 };

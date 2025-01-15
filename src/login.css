@@ -1,0 +1,61 @@
+/* Center the login container */
+.login-container {
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	height: 100vh; /* Full viewport height */
+	background-color: #333333; /* Light background to align with the app */
+}
+
+/* Style the login form */
+.login-form {
+	background: #fff; /* White background for the card */
+	padding: 20px;
+	border-radius: 8px;
+	box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Subtle shadow */
+	width: 100%;
+	max-width: 400px; /* Limit the form width */
+}
+
+/* Form group styling */
+.form-group {
+	margin-bottom: 15px;
+}
+
+.form-group label {
+	display: block;
+	margin-bottom: 5px;
+	font-weight: bold;
+}
+
+.form-control {
+	width: 100%;
+	padding: 10px;
+	border: 1px solid #ccc;
+	border-radius: 4px;
+	font-size: 16px;
+}
+
+/* Button styling */
+.login-btn {
+	display: inline-block;
+	width: 100%;
+	padding: 10px;
+	font-size: 16px;
+	color: #fff;
+	background-color: #007bff;
+	border: none;
+	border-radius: 4px;
+	cursor: pointer;
+}
+
+.login-btn:hover {
+	background-color: #0056b3;
+}
+
+/* Message styling */
+.message {
+	margin-top: 10px;
+	color: red; /* Error message in red */
+	text-align: center;
+}
