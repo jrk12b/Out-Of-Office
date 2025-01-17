@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
+import { BrowserRouter as Router, Route, Routes, Link } from 'react-router-dom';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import axios from 'axios';
 import FullCalendar from '@fullcalendar/react';
@@ -8,7 +9,7 @@ import interactionPlugin from '@fullcalendar/interaction';
 import HeaderNavigation from './components/HeaderNavigation';
 import PageContent from './components/PageContent';
 import Map from './components/Map';
-import { BrowserRouter as Router, Route, Routes, Link } from 'react-router-dom';
+import Profile from './components/Profile';
 import Register from './components/Register';
 import Login from './components/Login';
 import './App.css';
@@ -108,6 +109,7 @@ const App = () => {
 				<Route path="/register" element={<Register />} />
 				<Route path="/login" element={<Login onLogin={handleLogin} />} />
 				<Route path="/map" element={<Map />} />
+				<Route path="/profile" element={<Profile />} />
 				<Route
 					path="/"
 					element={
