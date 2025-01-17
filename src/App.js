@@ -25,9 +25,8 @@ const App = () => {
 	// Function to handle login state change
 	const handleLogin = async () => {
 		setIsLoggedIn(true);
-		localStorage.setItem('isLoggedIn', 'true'); // Store login state in localStorage
+		localStorage.setItem('isLoggedIn', 'true');
 
-		// Fetch PTO data immediately after logging in
 		try {
 			const response = await axios.get(`${HOST}/api/pto`, { withCredentials: true });
 			setPtoList(response.data);
@@ -38,7 +37,7 @@ const App = () => {
 
 	const handleLogout = () => {
 		setIsLoggedIn(false);
-		localStorage.removeItem('isLoggedIn'); // Remove login state from localStorage
+		localStorage.removeItem('isLoggedIn');
 	};
 
 	useEffect(() => {
@@ -102,7 +101,8 @@ const App = () => {
 			<HeaderNavigation
 				activeYear={activeYear}
 				setActiveYear={setActiveYear}
-				onLogout={handleLogout} // Pass handleLogout to HeaderNavigation
+				onLogout={handleLogout}
+				isLoggedIn={isLoggedIn}
 			/>
 			<Routes>
 				<Route path="/register" element={<Register />} />
@@ -134,9 +134,11 @@ const App = () => {
 								</div>
 							</>
 						) : (
-							<div>
-								<h2>Please log in to access the app</h2>
-								<Link to="/login">Go to Login</Link>
+							<div className="login-container">
+								<div className="login-card">
+									<h2>Please log in to access the app</h2>
+									<Link to="/login">Go to Login</Link>
+								</div>
 							</div>
 						)
 					}

@@ -5,23 +5,31 @@ import axios from 'axios';
 
 const { HOST } = require('../config.js');
 
-const HeaderNavigation = ({ activeYear, setActiveYear, onLogout }) => {
+const HeaderNavigation = ({ activeYear, setActiveYear, onLogout, isLoggedIn }) => {
 	const navigate = useNavigate();
 	const [user, setUser] = useState(null);
 
 	useEffect(() => {
 		const fetchUserData = async () => {
+			if (!isLoggedIn) {
+				setUser(null);
+				return;
+			}
 			try {
 				const response = await axios.get(`${HOST}/api/auth/me`, { withCredentials: true });
 				setUser(response.data);
 			} catch (error) {
-				console.error('Error fetching user data:', error);
-				setUser(null);
-				navigate('/login');
+				console.error('Error fetching user data:', error.response?.data || error.message);
+				setUser(null); // Reset user to null on error
+				// Only navigate to login if not already on a public route
+				if (window.location.pathname !== '/register') {
+					navigate('/login');
+				}
 			}
 		};
+
 		fetchUserData();
-	}, [navigate]);
+	}, [isLoggedIn, navigate]);
 
 	const handleLogout = async () => {
 		try {

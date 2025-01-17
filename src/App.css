@@ -201,3 +201,41 @@ main {
 .dark-table tbody tr:hover {
 	background-color: #333333;
 }
+
+/* Style for the container that centers the content on the page */
+.login-container {
+	display: flex;
+	justify-content: center; /* Horizontally center */
+	align-items: center; /* Vertically center */
+	height: 100vh; /* Full viewport height */
+	background-color: #f8f9fa; /* Light background color */
+	text-align: center; /* Center text inside */
+}
+
+/* Style for the card itself */
+.login-card {
+	background-color: white; /* White background for the card */
+	padding: 30px; /* Add some padding inside the card */
+	border-radius: 8px; /* Rounded corners */
+	box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Subtle shadow for the card */
+	max-width: 400px; /* Max width of the card */
+	width: 100%; /* Make sure the card takes full width up to the max-width */
+}
+
+/* Style for the heading */
+.login-card h2 {
+	font-size: 1.8rem; /* Adjust size of the heading */
+	color: #333; /* Dark text color */
+	margin-bottom: 20px; /* Add space below the heading */
+}
+
+/* Style for the link */
+.login-card a {
+	font-size: 1.2rem;
+	color: #007bff; /* Link color */
+	text-decoration: none; /* Remove underline */
+}
+
+.login-card a:hover {
+	text-decoration: underline; /* Underline on hover */
+}
