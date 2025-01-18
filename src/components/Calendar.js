@@ -29,6 +29,7 @@ const Calendar = ({ activeYear, ptoList }) => {
 				ref={calendarRef}
 				plugins={[multiMonthPlugin, dayGridPlugin, interactionPlugin]}
 				initialView="multiMonthYear"
+				multiMonthMaxColumns="1"
 				initialDate={`${activeYear}-01-01`}
 				editable={true}
 				events={calendarEvents}
