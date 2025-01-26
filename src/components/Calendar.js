@@ -7,7 +7,7 @@ import '../Calendar.css';
 
 const Calendar = ({ activeYear, ptoList }) => {
 	const calendarRef = useRef(null);
-	const [multiMonthColumns, setMultiMonthColumns] = useState(1); // State to control multiMonthMaxColumns
+	const [multiMonthColumns, setMultiMonthColumns] = useState(1);
 
 	useEffect(() => {
 		if (calendarRef.current) {

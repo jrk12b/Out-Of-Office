@@ -19,6 +19,7 @@ const Login = ({ onLogin }) => {
 				{ username, password },
 				{ withCredentials: true }
 			);
+			console.log(response);
 			setMessage('Login successful');
 			onLogin();
 			navigate('/');

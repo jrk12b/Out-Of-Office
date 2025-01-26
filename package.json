@@ -34,7 +34,8 @@
 		"test": "react-scripts test",
 		"eject": "react-scripts eject",
 		"format-check": "npx prettier --check .",
-		"format-write": "npx prettier --write ."
+		"format-write": "npx prettier --write .",
+		"lint": "eslint ."
 	},
 	"eslintConfig": {
 		"extends": [
@@ -56,5 +57,13 @@
 	},
 	"keywords": [],
 	"author": "",
-	"license": "ISC"
+	"license": "ISC",
+	"devDependencies": {
+		"@eslint/js": "^9.19.0",
+		"@testing-library/jest-dom": "^6.6.3",
+		"@testing-library/react": "^16.2.0",
+		"eslint": "^9.19.0",
+		"eslint-plugin-react": "^7.37.4",
+		"globals": "^15.14.0"
+	}
 }
