@@ -11,6 +11,7 @@ const authenticate = (req, res, next) => {
 		next(); // Proceed to the next middleware or route handler
 	} catch (err) {
 		res.status(401).json({ error: 'Unauthorized' });
+		console.log(err.message);
 	}
 };
 
