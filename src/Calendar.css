@@ -10,14 +10,13 @@
 
 /* Adjust the month text color */
 .fc-toolbar-title {
-	color: white !important; /* Ensures the text is white */
 	font-size: 1.5rem; /* Optional: Increase the font size for better visibility */
 }
 
 /* Optional: Customize buttons in the calendar toolbar */
-.fc-toolbar button {
-	background-color: #007bff; /* Button background color */
-	color: white; /* Button text color */
+.fc-toolbar {
+	/* background-color: #007bff; Button background color */
+	color: black; /* Button text color */
 	border: none; /* Remove default border */
 	border-radius: 5px; /* Round the button corners */
 	padding: 5px 10px; /* Add padding for a nicer look */
@@ -30,4 +29,25 @@
 /* Add spacing at the bottom of the calendar */
 .fc {
 	margin-bottom: 20px; /* Adds space below the calendar */
+}
+
+.button-container {
+	display: flex;
+	gap: 10px; /* Space between buttons */
+	margin-bottom: 15px; /* Space below the button container */
+}
+
+.button-container button {
+	background-color: #2c3e50; /* Button background color */
+	color: #ffffff; /* Button text color */
+	border: none; /* Remove border */
+	border-radius: 5px; /* Rounded corners */
+	padding: 10px 15px; /* Button padding */
+	cursor: pointer; /* Pointer cursor on hover */
+	font-size: 14px; /* Font size */
+	transition: background-color 0.3s ease; /* Smooth hover effect */
+}
+
+.button-container button:hover {
+	background-color: #34495e; /* Slightly lighter color on hover */
 }

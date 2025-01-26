@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import FullCalendar from '@fullcalendar/react';
 import multiMonthPlugin from '@fullcalendar/multimonth';
 import dayGridPlugin from '@fullcalendar/daygrid';
@@ -7,6 +7,7 @@ import '../Calendar.css';
 
 const Calendar = ({ activeYear, ptoList }) => {
 	const calendarRef = useRef(null);
+	const [multiMonthColumns, setMultiMonthColumns] = useState(1); // State to control multiMonthMaxColumns
 
 	useEffect(() => {
 		if (calendarRef.current) {
@@ -23,13 +24,22 @@ const Calendar = ({ activeYear, ptoList }) => {
 			color: '#FF5733',
 		}));
 
+	const handleColumnsChange = (columns) => {
+		setMultiMonthColumns(columns);
+	};
+
 	return (
 		<div className="calendar-container">
+			<div className="button-container">
+				<button onClick={() => handleColumnsChange(1)}>1 Column</button>
+				<button onClick={() => handleColumnsChange(2)}>2 Columns</button>
+				<button onClick={() => handleColumnsChange(3)}>3 Columns</button>
+			</div>
 			<FullCalendar
 				ref={calendarRef}
 				plugins={[multiMonthPlugin, dayGridPlugin, interactionPlugin]}
 				initialView="multiMonthYear"
-				multiMonthMaxColumns="1"
+				multiMonthMaxColumns={multiMonthColumns}
 				initialDate={`${activeYear}-01-01`}
 				editable={true}
 				events={calendarEvents}
