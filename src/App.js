@@ -98,6 +98,7 @@ const App = () => {
 									totalPTO={18}
 									addPTO={addPTO}
 									deletePTO={deletePTO}
+									setPtoList={setPtoList}
 								/>
 								<Calendar activeYear={activeYear} ptoList={ptoList} />{' '}
 							</>

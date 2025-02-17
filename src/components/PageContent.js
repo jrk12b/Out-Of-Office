@@ -7,7 +7,7 @@ import axios from 'axios';
 
 const { HOST } = require('../config.js');
 
-const PageContent = ({ activeYear, ptoList, addPTO, deletePTO }) => {
+const PageContent = ({ activeYear, ptoList, addPTO, deletePTO, setPtoList }) => {
 	const [totalPTOByYear, setTotalPTOByYear] = useState({});
 
 	useEffect(() => {
@@ -52,12 +52,13 @@ const PageContent = ({ activeYear, ptoList, addPTO, deletePTO }) => {
 			});
 
 			if (response.ok) {
+				// Update the PTO list in App.js using setPtoList
 				const updatedList = ptoList.map((pto) =>
 					pto._id === id ? { ...pto, ...updatedPTO } : pto
 				);
 
-				// Update the PTO list with the new data
-				setTotalPTOByYear(updatedList);
+				// Update the PTO list in App.js and trigger a re-render in Calendar
+				setPtoList(updatedList);
 			} else {
 				console.error('Failed to update PTO');
 			}
