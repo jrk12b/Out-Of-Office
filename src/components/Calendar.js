@@ -8,6 +8,7 @@ import '../Calendar.css';
 const Calendar = ({ activeYear, ptoList }) => {
 	const calendarRef = useRef(null);
 	const [multiMonthColumns, setMultiMonthColumns] = useState(1);
+	const [tooltip, setTooltip] = useState(null);
 
 	useEffect(() => {
 		if (calendarRef.current) {
@@ -20,12 +21,26 @@ const Calendar = ({ activeYear, ptoList }) => {
 		.filter((pto) => pto.date.startsWith(activeYear))
 		.map((pto) => ({
 			title: pto.name,
-			date: pto.date,
 			color: '#FF5733',
 		}));
 
 	const handleColumnsChange = (columns) => {
 		setMultiMonthColumns(columns);
+	};
+
+	const handleEventClick = (info) => {
+		const rect = info.el.getBoundingClientRect();
+
+		setTooltip((prevTooltip) =>
+			prevTooltip && prevTooltip.title === info.event.title
+				? null
+				: {
+						title: info.event.title,
+						date: info.event.date,
+						x: rect.left + window.scrollX + rect.width / 2,
+						y: rect.top + window.scrollY - 30,
+					}
+		);
 	};
 
 	return (
@@ -45,7 +60,25 @@ const Calendar = ({ activeYear, ptoList }) => {
 				events={calendarEvents}
 				timeZone="UTC"
 				height="auto"
+				eventClick={handleEventClick}
 			/>
+			{tooltip && (
+				<div
+					style={{
+						position: 'absolute',
+						top: tooltip.y,
+						left: tooltip.x,
+						background: '#333',
+						color: '#fff',
+						padding: '5px 10px',
+						borderRadius: '5px',
+						zIndex: 1000,
+						transform: 'translateX(-50%)',
+					}}
+				>
+					{tooltip.title}
+				</div>
+			)}
 		</div>
 	);
 };
