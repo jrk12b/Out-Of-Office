@@ -43,10 +43,12 @@ const PageContent = ({ activeYear, ptoList, addPTO, deletePTO }) => {
 	// Update an existing PTO entry
 	const updatePTO = async (id, updatedPTO) => {
 		try {
-			const response = await fetch(`${HOST}/api/pto/${id}`, {
+			const url = `${HOST}/api/pto/${id}`;
+			const body = JSON.stringify(updatedPTO);
+			const response = await fetch(url, {
 				method: 'PUT',
 				headers: { 'Content-Type': 'application/json' },
-				body: JSON.stringify(updatedPTO),
+				body: body,
 			});
 
 			if (response.ok) {

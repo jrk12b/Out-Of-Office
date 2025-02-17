@@ -120,7 +120,7 @@ const PTOCard = ({ ptoList, addPTO, updatePTO, deletePTO }) => {
 									{ptoList.map((pto) => (
 										<tr key={pto._id}>
 											<td>{pto.name}</td>
-											<td>{new Date(pto.date).toLocaleDateString()}</td>
+											<td>{new Date(pto.date).toLocaleDateString('en-US', { timeZone: 'UTC' })}</td>
 											<td>{pto.pto_year}</td>
 											<td>
 												<button

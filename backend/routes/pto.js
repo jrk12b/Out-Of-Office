@@ -67,17 +67,20 @@ router.delete('/:id', async (req, res) => {
 router.put('/:id', async (req, res) => {
 	try {
 		const id = req.params.id;
-		const { name, date, pto_year } = req.body;
+		const { name, date } = req.body;
 
 		// Validate input
-		if (!name || !date || !pto_year) {
+		if (!name || !date) {
 			return res.status(400).json({ error: 'Missing required fields' });
 		}
+
+		// Extract year from the date field (e.g., "2025-01-15")
+		const pto_year = new Date(date).getFullYear();
 
 		// Find PTO entry and update it
 		const updatedPTO = await PTO.findByIdAndUpdate(
 			id,
-			{ name, date, pto_year },
+			{ name, date, pto_year }, // Dynamically set pto_year based on date
 			{ new: true, runValidators: true } // Returns the updated document
 		);
 
