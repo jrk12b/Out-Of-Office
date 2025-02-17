@@ -14,7 +14,7 @@ import './App.css';
 const { HOST } = require('./config.js');
 
 const App = () => {
-	const [activeYear, setActiveYear] = useState('2024');
+	const [activeYear, setActiveYear] = useState('2025');
 	const [ptoList, setPtoList] = useState([]);
 	const [isLoggedIn, setIsLoggedIn] = useState(false);
 
@@ -66,7 +66,8 @@ const App = () => {
 
 	const deletePTO = async (id) => {
 		try {
-			await axios.delete(`${HOST}api/pto/${id}`);
+			const url = `${HOST}/api/pto/${id}`;
+			await axios.delete(url);
 			setPtoList((prev) => prev.filter((pto) => pto._id !== id));
 		} catch (error) {
 			console.error('Error deleting PTO:', error);
@@ -99,7 +100,6 @@ const App = () => {
 									deletePTO={deletePTO}
 								/>
 								<Calendar activeYear={activeYear} ptoList={ptoList} />{' '}
-								{/* Use the Calendar component */}
 							</>
 						) : (
 							<div className="login-container">

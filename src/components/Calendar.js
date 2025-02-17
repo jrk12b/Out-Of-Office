@@ -21,6 +21,7 @@ const Calendar = ({ activeYear, ptoList }) => {
 		.filter((pto) => pto.date.startsWith(activeYear))
 		.map((pto) => ({
 			title: pto.name,
+			date: pto.date,
 			color: '#FF5733',
 		}));
 
@@ -60,7 +61,7 @@ const Calendar = ({ activeYear, ptoList }) => {
 				events={calendarEvents}
 				timeZone="UTC"
 				height="auto"
-				eventClick={handleEventClick}
+				eventClick={handleEventClick} // <-- Click event instead of hover
 			/>
 			{tooltip && (
 				<div

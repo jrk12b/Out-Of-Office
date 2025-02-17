@@ -51,7 +51,7 @@ const HeaderNavigation = ({ activeYear, setActiveYear, onLogout, isLoggedIn }) =
 				<Navbar.Toggle aria-controls="basic-navbar-nav" />
 				<Navbar.Collapse id="basic-navbar-nav">
 					<Nav className="me-auto">
-						{['2024', '2023', '2022'].map((year) => (
+						{['2025', '2024', '2023', '2022'].map((year) => (
 							<Nav.Link
 								key={year}
 								onClick={() => setActiveYear(year)}

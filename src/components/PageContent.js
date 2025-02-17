@@ -20,7 +20,7 @@ const PageContent = ({ activeYear, ptoList, addPTO, deletePTO }) => {
 				// Update the total PTO for the active year in the state
 				setTotalPTOByYear((prev) => ({
 					...prev,
-					[activeYear]: response.data.totalPTO, // Assuming response.data contains the PTO data
+					[activeYear]: response.data.totalPTO,
 				}));
 			} catch (error) {
 				console.error('Error fetching total PTO:', error);
