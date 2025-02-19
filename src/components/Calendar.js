@@ -17,11 +17,6 @@ const Calendar = ({ activeYear, ptoList }) => {
 		}
 	}, [activeYear]);
 
-	// const getRandomColor = () => {
-	//     const colors = ['#FF5733', '#33FF57', '#3357FF', '#FFC300', '#8E44AD'];
-	//     return colors[Math.floor(Math.random() * colors.length)];
-	// };
-
 	const calendarEvents = ptoList.map((pto) => ({
 		title: pto.name,
 		date: pto.date,
