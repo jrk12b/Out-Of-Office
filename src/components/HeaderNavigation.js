@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Navbar, Nav, Container, Dropdown } from 'react-bootstrap';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
+import '../App.css';
 
 const { HOST } = require('../config.js');
 
@@ -54,7 +55,10 @@ const HeaderNavigation = ({ activeYear, setActiveYear, onLogout, isLoggedIn }) =
 						{['2025', '2024', '2023', '2022'].map((year) => (
 							<Nav.Link
 								key={year}
-								onClick={() => setActiveYear(year)}
+								onClick={() => {
+									setActiveYear(year);
+									navigate('/');
+								}}
 								active={activeYear === year}
 								className="year-link"
 							>
