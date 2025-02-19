@@ -1,52 +1,52 @@
 import React, { useState } from 'react';
+import { SketchPicker } from 'react-color'; // Import color picker
 import '../App.css';
 
 const PTOCard = ({ ptoList, addPTO, updatePTO, deletePTO }) => {
-	const [newPTO, setNewPTO] = useState({ name: '', date: '' });
-	const [editingPTO, setEditingPTO] = useState(null); // Track the PTO being edited
+	const [newPTO, setNewPTO] = useState({ name: '', date: '', color: '#FF5733' });
+	const [editingPTO, setEditingPTO] = useState(null);
+	const [showColorPicker, setShowColorPicker] = useState(false);
 
-	// Handle form input changes
 	const handleInputChange = (e) => {
 		const { name, value } = e.target;
 		setNewPTO((prev) => ({ ...prev, [name]: value }));
 	};
 
-	// Add a new PTO item
+	const handleColorChange = (color) => {
+		setNewPTO((prev) => ({ ...prev, color: color.hex }));
+	};
+
 	const handleAddPTO = async (e) => {
 		e.preventDefault();
-		const uniqueId = Date.now().toString(); // Generate unique ID for the new PTO
+		const uniqueId = Date.now().toString();
 		await addPTO({ ...newPTO, unique_id: uniqueId });
-		setNewPTO({ name: '', date: '' });
+		setNewPTO({ name: '', date: '', color: '#FF5733' });
+		setShowColorPicker(false);
 	};
 
-	// Delete a PTO item
-	const handleDeletePTO = async (id) => {
-		await deletePTO(id);
-	};
-
-	// Edit an existing PTO item
 	const handleEditPTO = (pto) => {
-		setEditingPTO(pto); // Set the PTO to be edited
+		setEditingPTO(pto);
 		setNewPTO({
 			name: pto.name,
 			date: new Date(pto.date).toISOString().split('T')[0],
+			color: pto.color || '#FF5733',
 		});
+		setShowColorPicker(false);
 	};
 
-	// Update an existing PTO item
 	const handleUpdatePTO = async (e) => {
 		e.preventDefault();
 		if (editingPTO) {
-			await updatePTO(editingPTO._id, newPTO); // Update the PTO item
-			setEditingPTO(null); // Exit edit mode
-			setNewPTO({ name: '', date: '' }); // Clear form fields
+			await updatePTO(editingPTO._id, newPTO);
+			setEditingPTO(null);
+			setNewPTO({ name: '', date: '', color: '#FF5733' });
+			setShowColorPicker(false);
 		}
 	};
 
 	return (
 		<div className="container">
 			<div className="row" style={{ display: 'flex', justifyContent: 'space-between' }}>
-				{/* Add or Edit PTO Form Card */}
 				<div className="col-md-5">
 					<div className="card dark-card">
 						<div className="card-header dark-card-header">
@@ -82,6 +82,31 @@ const PTOCard = ({ ptoList, addPTO, updatePTO, deletePTO }) => {
 										required
 									/>
 								</div>
+								<div className="mb-3">
+									<label className="form-label">Pick a Color</label>
+									<div
+										style={{
+											display: 'flex',
+											alignItems: 'center',
+											cursor: 'pointer',
+										}}
+									>
+										<div
+											style={{
+												width: '30px',
+												height: '30px',
+												borderRadius: '50%',
+												backgroundColor: newPTO.color,
+												border: '1px solid #ccc',
+												marginRight: '10px',
+											}}
+											onClick={() => setShowColorPicker(!showColorPicker)}
+										></div>
+										{showColorPicker && (
+											<SketchPicker color={newPTO.color} onChangeComplete={handleColorChange} />
+										)}
+									</div>
+								</div>
 								<button type="submit" className="btn btn-primary">
 									{editingPTO ? 'Update PTO' : 'Add PTO'}
 								</button>
@@ -91,7 +116,7 @@ const PTOCard = ({ ptoList, addPTO, updatePTO, deletePTO }) => {
 										className="btn btn-secondary"
 										onClick={() => {
 											setEditingPTO(null);
-											setNewPTO({ name: '', date: '' });
+											setNewPTO({ name: '', date: '', color: '#FF5733' });
 										}}
 										style={{ marginLeft: '10px' }}
 									>
@@ -102,7 +127,6 @@ const PTOCard = ({ ptoList, addPTO, updatePTO, deletePTO }) => {
 						</div>
 					</div>
 				</div>
-				{/* PTO Table Card */}
 				<div className="col-md-6">
 					<div className="card dark-card">
 						<div className="card-header dark-card-header">Days of PTO</div>
@@ -113,6 +137,7 @@ const PTOCard = ({ ptoList, addPTO, updatePTO, deletePTO }) => {
 										<th>Name</th>
 										<th>Date</th>
 										<th>Year</th>
+										<th>Color</th>
 										<th>Actions</th>
 									</tr>
 								</thead>
@@ -123,6 +148,17 @@ const PTOCard = ({ ptoList, addPTO, updatePTO, deletePTO }) => {
 											<td>{new Date(pto.date).toLocaleDateString('en-US', { timeZone: 'UTC' })}</td>
 											<td>{pto.pto_year}</td>
 											<td>
+												<div
+													style={{
+														width: '20px',
+														height: '20px',
+														backgroundColor: pto.color,
+														borderRadius: '50%',
+														border: '1px solid #ccc',
+													}}
+												></div>
+											</td>
+											<td>
 												<button
 													className="btn btn-warning btn-sm"
 													onClick={() => handleEditPTO(pto)}
@@ -131,7 +167,7 @@ const PTOCard = ({ ptoList, addPTO, updatePTO, deletePTO }) => {
 												</button>
 												<button
 													className="btn btn-danger btn-sm"
-													onClick={() => handleDeletePTO(pto._id)}
+													onClick={() => deletePTO(pto._id)}
 													style={{ marginLeft: '5px' }}
 												>
 													Delete

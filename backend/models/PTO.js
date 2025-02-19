@@ -6,6 +6,7 @@ const PTOSchema = new mongoose.Schema({
 	date: { type: Date, required: true },
 	pto_year: { type: String },
 	userId: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true },
+	color: { type: String, default: '#FF5733' }, // Default color
 });
 
 // Middleware to automatically set the pto_year

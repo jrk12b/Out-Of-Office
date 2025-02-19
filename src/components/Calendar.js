@@ -17,13 +17,16 @@ const Calendar = ({ activeYear, ptoList }) => {
 		}
 	}, [activeYear]);
 
-	const calendarEvents = ptoList
-		.filter((pto) => pto.date.startsWith(activeYear))
-		.map((pto) => ({
-			title: pto.name,
-			date: pto.date,
-			color: '#FF5733',
-		}));
+	// const getRandomColor = () => {
+	//     const colors = ['#FF5733', '#33FF57', '#3357FF', '#FFC300', '#8E44AD'];
+	//     return colors[Math.floor(Math.random() * colors.length)];
+	// };
+
+	const calendarEvents = ptoList.map((pto) => ({
+		title: pto.name,
+		date: pto.date,
+		color: pto.color || '#FF5733',
+	}));
 
 	const handleColumnsChange = (columns) => {
 		setMultiMonthColumns(columns);
