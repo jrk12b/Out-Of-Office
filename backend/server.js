@@ -5,6 +5,7 @@ const ptoRoutes = require('./routes/pto');
 const cookieParser = require('cookie-parser');
 const { exec } = require('child_process');
 const authRoutes = require('./routes/auth');
+const pinRoutes = require('./routes/pins');
 
 const frontend = process.env.FRONTEND;
 if (frontend === 'true') {
@@ -43,6 +44,7 @@ if (frontend === 'true') {
 
 	app.use('/api/pto', ptoRoutes);
 	app.use('/api/auth', authRoutes);
+	app.use('/api/pins', pinRoutes);
 
 	app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
 }
