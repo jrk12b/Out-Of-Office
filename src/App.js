@@ -64,7 +64,11 @@ const App = () => {
 	const addPTO = async (newPTO) => {
 		try {
 			// Post new PTO data to the backend
-			const response = await axios.post(`${HOST}/api/pto`, newPTO, { withCredentials: true });
+			const response = await axios.post(
+				`${HOST}/api/pto`,
+				{ ...newPTO, pto_year: newPTO.pto_year },
+				{ withCredentials: true }
+			);
 			// Add the new PTO entry to the existing list
 			setPtoList((prev) => [...prev, response.data]);
 		} catch (error) {

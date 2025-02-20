@@ -2,15 +2,20 @@ import React, { useState } from 'react';
 import { SketchPicker } from 'react-color';
 import '../App.css';
 
-const PTOCard = ({ ptoList, addPTO, updatePTO, deletePTO }) => {
+const PTOCard = ({ ptoList, addPTO, updatePTO, deletePTO, activeYear }) => {
 	// State to manage new PTO entry form and color selection
-	const [newPTO, setNewPTO] = useState({ name: '', date: '', color: '#FF5733' });
+	const [newPTO, setNewPTO] = useState({
+		name: '',
+		date: '',
+		color: '#FF5733',
+		pto_year: activeYear,
+	});
 	// State to manage currently edited PTO item
 	const [editingPTO, setEditingPTO] = useState(null);
 	// State to toggle the color picker visibility
 	const [showColorPicker, setShowColorPicker] = useState(false);
 
-	// Handles form input changes (name, date)
+	// Handles form input changes (name, date, and year)
 	const handleInputChange = (e) => {
 		const { name, value } = e.target;
 		setNewPTO((prev) => ({ ...prev, [name]: value }));
@@ -26,7 +31,7 @@ const PTOCard = ({ ptoList, addPTO, updatePTO, deletePTO }) => {
 		e.preventDefault(); // Prevents form submission
 		const uniqueId = Date.now().toString(); // Create a unique ID for the new PTO
 		await addPTO({ ...newPTO, unique_id: uniqueId }); // Pass new PTO to parent function
-		setNewPTO({ name: '', date: '', color: '#FF5733' }); // Reset the form after adding PTO
+		setNewPTO({ name: '', date: '', color: '#FF5733', year: activeYear }); // Reset the form after adding PTO
 		setShowColorPicker(false); // Hide the color picker
 	};
 
@@ -37,6 +42,7 @@ const PTOCard = ({ ptoList, addPTO, updatePTO, deletePTO }) => {
 			name: pto.name,
 			date: new Date(pto.date).toISOString().split('T')[0], // Convert date to 'YYYY-MM-DD' format
 			color: pto.color || '#FF5733', // Set color, default to red if not specified
+			year: pto.pto_year || activeYear, // Set year, use activeYear if not specified
 		});
 		setShowColorPicker(false); // Hide the color picker when editing
 	};
@@ -47,7 +53,7 @@ const PTOCard = ({ ptoList, addPTO, updatePTO, deletePTO }) => {
 		if (editingPTO) {
 			await updatePTO(editingPTO._id, newPTO); // Update the PTO with the new data
 			setEditingPTO(null); // Reset the editing state
-			setNewPTO({ name: '', date: '', color: '#FF5733' }); // Reset the form
+			setNewPTO({ name: '', date: '', color: '#FF5733', year: activeYear }); // Reset the form
 			setShowColorPicker(false); // Hide the color picker
 		}
 	};
@@ -55,12 +61,10 @@ const PTOCard = ({ ptoList, addPTO, updatePTO, deletePTO }) => {
 	return (
 		<div className="container">
 			<div className="row" style={{ display: 'flex', justifyContent: 'space-between' }}>
-				{/* Form for adding or editing PTO */}
 				<div className="col-md-5">
 					<div className="card dark-card">
 						<div className="card-header dark-card-header">
-							{editingPTO ? 'Edit PTO Item' : 'Add PTO Item'}{' '}
-							{/* Change header text based on editing state */}
+							{editingPTO ? 'Edit PTO Item' : 'Add PTO Item'}
 						</div>
 						<div className="card-body">
 							<form onSubmit={editingPTO ? handleUpdatePTO : handleAddPTO}>
@@ -94,6 +98,21 @@ const PTOCard = ({ ptoList, addPTO, updatePTO, deletePTO }) => {
 										required
 									/>
 								</div>
+								{/* PTO Year Input */}
+								<div className="mb-3">
+									<label htmlFor="year" className="form-label">
+										Year
+									</label>
+									<input
+										type="number"
+										id="pto_year"
+										name="pto_year"
+										className="form-control dark-input"
+										value={newPTO.year}
+										onChange={handleInputChange}
+										required
+									/>
+								</div>
 								{/* Color Picker */}
 								<div className="mb-3">
 									<label className="form-label">Pick a Color</label>
@@ -104,7 +123,6 @@ const PTOCard = ({ ptoList, addPTO, updatePTO, deletePTO }) => {
 											cursor: 'pointer',
 										}}
 									>
-										{/* Display selected color */}
 										<div
 											style={{
 												width: '30px',
@@ -114,15 +132,14 @@ const PTOCard = ({ ptoList, addPTO, updatePTO, deletePTO }) => {
 												border: '1px solid #ccc',
 												marginRight: '10px',
 											}}
-											onClick={() => setShowColorPicker(!showColorPicker)} // Toggle color picker visibility
+											onClick={() => setShowColorPicker(!showColorPicker)}
 										></div>
-										{/* Render color picker when visible */}
 										{showColorPicker && (
 											<SketchPicker color={newPTO.color} onChangeComplete={handleColorChange} />
 										)}
 									</div>
 								</div>
-								{/* Submit Button for Adding or Updating PTO */}
+								{/* Submit Button */}
 								<button type="submit" className="btn btn-primary">
 									{editingPTO ? 'Update PTO' : 'Add PTO'}
 								</button>
@@ -133,7 +150,7 @@ const PTOCard = ({ ptoList, addPTO, updatePTO, deletePTO }) => {
 										className="btn btn-secondary"
 										onClick={() => {
 											setEditingPTO(null);
-											setNewPTO({ name: '', date: '', color: '#FF5733' });
+											setNewPTO({ name: '', date: '', color: '#FF5733', year: activeYear });
 										}}
 										style={{ marginLeft: '10px' }}
 									>
@@ -159,7 +176,6 @@ const PTOCard = ({ ptoList, addPTO, updatePTO, deletePTO }) => {
 										<th>Actions</th>
 									</tr>
 								</thead>
-								{/* Table rows for displaying PTO items */}
 								<tbody>
 									{ptoList.map((pto) => (
 										<tr key={pto._id}>
@@ -167,7 +183,6 @@ const PTOCard = ({ ptoList, addPTO, updatePTO, deletePTO }) => {
 											<td>{new Date(pto.date).toLocaleDateString('en-US', { timeZone: 'UTC' })}</td>
 											<td>{pto.pto_year}</td>
 											<td>
-												{/* Display PTO color */}
 												<div
 													style={{
 														width: '20px',
@@ -179,16 +194,15 @@ const PTOCard = ({ ptoList, addPTO, updatePTO, deletePTO }) => {
 												></div>
 											</td>
 											<td>
-												{/* Edit and Delete Buttons */}
 												<button
 													className="btn btn-warning btn-sm"
-													onClick={() => handleEditPTO(pto)} // Trigger edit when clicked
+													onClick={() => handleEditPTO(pto)}
 												>
 													Edit
 												</button>
 												<button
 													className="btn btn-danger btn-sm"
-													onClick={() => deletePTO(pto._id)} // Trigger delete when clicked
+													onClick={() => deletePTO(pto._id)}
 													style={{ marginLeft: '5px' }}
 												>
 													Delete

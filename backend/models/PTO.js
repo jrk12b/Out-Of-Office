@@ -25,15 +25,6 @@ const PTOSchema = new mongoose.Schema({
 	color: { type: String, default: '#FF5733' },
 });
 
-// Middleware to automatically set the 'pto_year' field before saving the PTO entry
-PTOSchema.pre('save', function (next) {
-	if (this.date) {
-		// Extract the year from the 'date' field and set it as 'pto_year'
-		this.pto_year = this.date.getFullYear().toString();
-	}
-	next();
-});
-
 // Defining a schema for tracking total PTO available per year for each user
 const PTOTotalSchema = new mongoose.Schema({
 	// Active year for PTO tracking (required field)

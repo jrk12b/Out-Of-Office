@@ -105,7 +105,8 @@ const PageContent = ({ activeYear, ptoList, addPTO, deletePTO, setPtoList }) => 
 				ptoList={filteredPTOList}
 				addPTO={addPTO}
 				deletePTO={deletePTO}
-				updatePTO={updatePTO} // Pass the updatePTO function for updating PTO
+				updatePTO={updatePTO}
+				activeYear={activeYear}
 			/>
 		</main>
 	);

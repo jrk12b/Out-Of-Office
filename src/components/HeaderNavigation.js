@@ -60,7 +60,7 @@ const HeaderNavigation = ({ activeYear, setActiveYear, onLogout, isLoggedIn }) =
 				<Navbar.Collapse id="basic-navbar-nav">
 					<Nav className="me-auto">
 						{/* Loop through years to create links for different active years */}
-						{['2025', '2024', '2023', '2022'].map((year) => (
+						{['2025', '2024', '2023', '2022', '2021', '2020'].map((year) => (
 							<Nav.Link
 								key={year} // Unique key for each year
 								onClick={() => {
