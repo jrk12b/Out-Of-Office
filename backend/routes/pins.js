@@ -6,8 +6,14 @@ const authenticate = require('../middleware/authenticate');
 // Save a new pin
 router.post('/add', authenticate, async (req, res) => {
 	try {
-		const { lat, lng } = req.body;
-		const newPin = new Pin({ lat, lng, userId: req.user.id });
+		const { lat, lng, category } = req.body;
+
+		// Validate category input
+		if (!['visited', 'wishlist'].includes(category)) {
+			return res.status(400).json({ error: 'Invalid category. Use "visited" or "wishlist".' });
+		}
+
+		const newPin = new Pin({ lat, lng, category, userId: req.user.id });
 
 		await newPin.save();
 		res.status(201).json(newPin);
