@@ -88,6 +88,30 @@ const MapPage = () => {
 		return null;
 	};
 
+	const Legend = () => {
+		return (
+			<div
+				style={{
+					position: 'absolute',
+					bottom: '20px',
+					left: '20px',
+					backgroundColor: 'white',
+					padding: '10px',
+					borderRadius: '5px',
+					boxShadow: '0px 0px 5px rgba(0, 0, 0, 0.3)',
+					fontSize: '14px',
+				}}
+			>
+				<p>
+					<span style={{ color: 'blue', fontWeight: 'bold' }}>●</span> Visited
+				</p>
+				<p>
+					<span style={{ color: 'green', fontWeight: 'bold' }}>●</span> Wishlist
+				</p>
+			</div>
+		);
+	};
+
 	return (
 		<div
 			style={{
@@ -99,7 +123,7 @@ const MapPage = () => {
 			<div style={{ height: '75vh', width: '75%' }}>
 				<MapContainer
 					center={[39.8283, -98.5795]}
-					zoom={5}
+					zoom={4}
 					style={{ height: '100%', width: '100%' }}
 				>
 					<TileLayer
@@ -137,6 +161,7 @@ const MapPage = () => {
 						</Marker>
 					))}
 				</MapContainer>
+				<Legend />
 			</div>
 		</div>
 	);
