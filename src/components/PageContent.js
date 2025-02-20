@@ -5,74 +5,80 @@ import PTORemainingCard from './PTORemainingCard';
 import PTOCard from './PTOCard';
 import axios from 'axios';
 
-const { HOST } = require('../config.js');
+const { HOST } = require('../config.js'); // Import the host URL from the config file
 
 const PageContent = ({ activeYear, ptoList, addPTO, deletePTO, setPtoList }) => {
+	// State to store the total PTO for each year
 	const [totalPTOByYear, setTotalPTOByYear] = useState({});
 
+	// Fetch total PTO when the activeYear changes
 	useEffect(() => {
 		const fetchTotalPTO = async () => {
 			try {
+				// Make API request to get the total PTO for the given year
 				const response = await axios.get(`${HOST}/api/pto/pto-total/${activeYear}`, {
-					withCredentials: true,
+					withCredentials: true, // Send cookies with the request for authentication
 				});
 
 				// Update the total PTO for the active year in the state
 				setTotalPTOByYear((prev) => ({
 					...prev,
-					[activeYear]: response.data.totalPTO,
+					[activeYear]: response.data.totalPTO, // Set total PTO for the current year
 				}));
 			} catch (error) {
-				console.error('Error fetching total PTO:', error);
+				console.error('Error fetching total PTO:', error); // Log any error during the fetch
 			}
 		};
 
+		// Trigger the PTO fetching if the activeYear is defined
 		if (activeYear) {
-			fetchTotalPTO(); // Fetch total PTO data when activeYear changes
+			fetchTotalPTO(); // Call the function to fetch the total PTO
 		}
-	}, [activeYear]); // Re-run the effect if activeYear changes
+	}, [activeYear]); // Re-run the effect whenever activeYear changes
 
-	// Update the total PTO for a specific year
+	// Update the total PTO for a specific year in the state
 	const updateTotalPTO = (activeYear, value) => {
 		setTotalPTOByYear((prev) => ({
 			...prev,
-			[activeYear]: value,
+			[activeYear]: value, // Set new total PTO for the given year
 		}));
 	};
 
-	// Update an existing PTO entry
+	// Update an existing PTO entry in the backend and update the state
 	const updatePTO = async (id, updatedPTO) => {
 		try {
+			// Define the URL for updating the PTO entry
 			const url = `${HOST}/api/pto/${id}`;
-			const body = JSON.stringify(updatedPTO);
+			const body = JSON.stringify(updatedPTO); // Convert the updated PTO data to JSON
 			const response = await fetch(url, {
-				method: 'PUT',
+				method: 'PUT', // HTTP method to update the entry
 				headers: { 'Content-Type': 'application/json' },
-				body: body,
+				body: body, // Pass the updated PTO data in the request body
 			});
 
 			if (response.ok) {
-				// Update the PTO list in App.js using setPtoList
-				const updatedList = ptoList.map((pto) =>
-					pto._id === id ? { ...pto, ...updatedPTO } : pto
+				// If successful, update the PTO list in App.js and trigger re-render in Calendar
+				const updatedList = ptoList.map(
+					(pto) => (pto._id === id ? { ...pto, ...updatedPTO } : pto) // Update the specific PTO entry
 				);
 
-				// Update the PTO list in App.js and trigger a re-render in Calendar
+				// Update the state in the parent component
 				setPtoList(updatedList);
 			} else {
-				console.error('Failed to update PTO');
+				console.error('Failed to update PTO'); // Log error if update fails
 			}
 		} catch (error) {
-			console.error('Error updating PTO:', error);
+			console.error('Error updating PTO:', error); // Log any error during the update
 		}
 	};
 
-	// Filter PTO list for the active year
+	// Filter PTO list to only include entries for the active year
 	const filteredPTOList = ptoList.filter((pto) => pto.pto_year === activeYear);
 
-	const totalPTO = totalPTOByYear[activeYear] || 0;
-	const ptoPlanned = filteredPTOList.length;
-	const ptoRemaining = totalPTO - ptoPlanned;
+	// Calculate total PTO, planned PTO count, and remaining PTO
+	const totalPTO = totalPTOByYear[activeYear] || 0; // Use 0 as default if no PTO is found for the year
+	const ptoPlanned = filteredPTOList.length; // Number of planned PTO entries for the year
+	const ptoRemaining = totalPTO - ptoPlanned; // Calculate remaining PTO
 
 	return (
 		<main style={{ padding: '20px' }}>
@@ -83,19 +89,23 @@ const PageContent = ({ activeYear, ptoList, addPTO, deletePTO, setPtoList }) => 
 					marginBottom: '20px',
 				}}
 			>
+				{/* Total PTO card component */}
 				<TotalPTOCard
 					activeYear={activeYear}
 					totalPTO={totalPTO}
-					updateTotalPTO={(value) => updateTotalPTO(activeYear, value)}
+					updateTotalPTO={(value) => updateTotalPTO(activeYear, value)} // Pass update function to child component
 				/>
+				{/* Planned PTO card component */}
 				<PTOPlannedCard ptoCount={ptoPlanned} />
+				{/* Remaining PTO card component */}
 				<PTORemainingCard ptoRemaining={ptoRemaining} />
 			</div>
+			{/* PTO Card component to manage individual PTO entries */}
 			<PTOCard
 				ptoList={filteredPTOList}
 				addPTO={addPTO}
 				deletePTO={deletePTO}
-				updatePTO={updatePTO}
+				updatePTO={updatePTO} // Pass the updatePTO function for updating PTO
 			/>
 		</main>
 	);
