@@ -2,13 +2,13 @@ import React, { useState } from 'react';
 import { SketchPicker } from 'react-color';
 import '../App.css';
 
-const PTOCard = ({ ptoList, addPTO, updatePTO, deletePTO, activeYear }) => {
+const PTOCard = ({ ptoList, addPTO, updatePTO, deletePTO }) => {
 	// State to manage new PTO entry form and color selection
 	const [newPTO, setNewPTO] = useState({
 		name: '',
 		date: '',
 		color: '#FF5733',
-		pto_year: activeYear,
+		pto_year: '',
 	});
 	// State to manage currently edited PTO item
 	const [editingPTO, setEditingPTO] = useState(null);
@@ -31,7 +31,7 @@ const PTOCard = ({ ptoList, addPTO, updatePTO, deletePTO, activeYear }) => {
 		e.preventDefault(); // Prevents form submission
 		const uniqueId = Date.now().toString(); // Create a unique ID for the new PTO
 		await addPTO({ ...newPTO, unique_id: uniqueId }); // Pass new PTO to parent function
-		setNewPTO({ name: '', date: '', color: '#FF5733', year: activeYear }); // Reset the form after adding PTO
+		setNewPTO({ name: '', date: '', color: '#FF5733', pto_year: '' }); // Reset the form after adding PTO
 		setShowColorPicker(false); // Hide the color picker
 	};
 
@@ -42,7 +42,7 @@ const PTOCard = ({ ptoList, addPTO, updatePTO, deletePTO, activeYear }) => {
 			name: pto.name,
 			date: new Date(pto.date).toISOString().split('T')[0], // Convert date to 'YYYY-MM-DD' format
 			color: pto.color || '#FF5733', // Set color, default to red if not specified
-			year: pto.pto_year || activeYear, // Set year, use activeYear if not specified
+			pto_year: pto.pto_year || '',
 		});
 		setShowColorPicker(false); // Hide the color picker when editing
 	};
@@ -53,7 +53,7 @@ const PTOCard = ({ ptoList, addPTO, updatePTO, deletePTO, activeYear }) => {
 		if (editingPTO) {
 			await updatePTO(editingPTO._id, newPTO); // Update the PTO with the new data
 			setEditingPTO(null); // Reset the editing state
-			setNewPTO({ name: '', date: '', color: '#FF5733', year: activeYear }); // Reset the form
+			setNewPTO({ name: '', date: '', color: '#FF5733', pto_year: '' }); // Reset the form
 			setShowColorPicker(false); // Hide the color picker
 		}
 	};
@@ -108,7 +108,7 @@ const PTOCard = ({ ptoList, addPTO, updatePTO, deletePTO, activeYear }) => {
 										id="pto_year"
 										name="pto_year"
 										className="form-control dark-input"
-										value={newPTO.year}
+										value={newPTO.pto_year}
 										onChange={handleInputChange}
 										required
 									/>
@@ -150,7 +150,7 @@ const PTOCard = ({ ptoList, addPTO, updatePTO, deletePTO, activeYear }) => {
 										className="btn btn-secondary"
 										onClick={() => {
 											setEditingPTO(null);
-											setNewPTO({ name: '', date: '', color: '#FF5733', year: activeYear });
+											setNewPTO({ name: '', date: '', color: '#FF5733', pto_year: '' });
 										}}
 										style={{ marginLeft: '10px' }}
 									>
