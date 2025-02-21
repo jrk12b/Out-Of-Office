@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { SketchPicker } from 'react-color';
 import '../App.css';
 
@@ -18,6 +18,50 @@ const PTOCard = ({ ptoList, addPTO, updatePTO, deletePTO, activeYear }) => {
 	const [showColorPicker, setShowColorPicker] = useState(false);
 	// State for PTO planning notes
 	const [notes, setNotes] = useState('');
+
+	useEffect(() => {
+		const fetchNotes = async () => {
+			try {
+				const response = await fetch(`${HOST}/api/pto/notes?activeYear=${activeYear}`, {
+					method: 'GET',
+					credentials: 'include',
+				});
+
+				if (!response.ok) {
+					throw new Error('Failed to fetch notes');
+				}
+
+				const data = await response.json();
+				setNotes(data.notes || '');
+			} catch (error) {
+				console.error('Error fetching notes:', error);
+			}
+		};
+
+		fetchNotes();
+	}, [activeYear]);
+
+	const handleSaveNotes = async () => {
+		try {
+			const response = await fetch(`${HOST}/api/pto/notes`, {
+				method: 'PUT',
+				credentials: 'include',
+				headers: {
+					'Content-Type': 'application/json',
+				},
+				body: JSON.stringify({ activeYear, notes }),
+			});
+
+			const data = await response.json();
+
+			if (!response.ok) {
+				throw new Error(data.message || 'Failed to save notes');
+			}
+		} catch (error) {
+			console.error('Error saving notes:', error);
+			alert(error.message);
+		}
+	};
 
 	const handleInputChange = (e) => {
 		const { name, value } = e.target;
@@ -159,6 +203,7 @@ const PTOCard = ({ ptoList, addPTO, updatePTO, deletePTO, activeYear }) => {
 							</form>
 						</div>
 					</div>
+					{/* Notes Section */}
 					<div className="mb-3">
 						<label htmlFor="notes" className="form-label">
 							Notes for {activeYear}
@@ -169,30 +214,7 @@ const PTOCard = ({ ptoList, addPTO, updatePTO, deletePTO, activeYear }) => {
 							value={notes}
 							onChange={(e) => setNotes(e.target.value)}
 						/>
-						<button
-							className="btn btn-success mt-2"
-							onClick={async () => {
-								try {
-									const response = await fetch(`${HOST}/api/pto/notes`, {
-										method: 'PUT',
-										credentials: 'include',
-										headers: {
-											'Content-Type': 'application/json',
-										},
-										body: JSON.stringify({ activeYear, notes }),
-									});
-
-									const data = await response.json();
-
-									if (!response.ok) {
-										throw new Error(data.message || 'Failed to save notes');
-									}
-								} catch (error) {
-									console.error('Error saving notes:', error);
-									alert(error.message);
-								}
-							}}
-						>
+						<button className="btn btn-success mt-2" onClick={handleSaveNotes}>
 							Save Notes
 						</button>
 					</div>

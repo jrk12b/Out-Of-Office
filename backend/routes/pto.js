@@ -1,5 +1,6 @@
 const express = require('express');
 const router = express.Router();
+const mongoose = require('mongoose');
 const { PTO, PTOTotal } = require('../models/PTO');
 const authenticate = require('../middleware/authenticate');
 
@@ -50,6 +51,35 @@ router.put('/notes', authenticate, async (req, res) => {
 		res.json({ message: 'Notes updated successfully', ptoTotal });
 	} catch (error) {
 		console.error('Server error:', error);
+		res.status(500).json({ message: 'Server error' });
+	}
+});
+
+// Get notes for a specific user and the current year
+router.get('/notes', authenticate, async (req, res) => {
+	if (!req.user) {
+		return res.status(401).json({ message: 'Unauthorized' });
+	}
+
+	const { activeYear } = req.query; // Get the year from the query parameter
+	const userId = req.user.id;
+
+	try {
+		// Convert userId to ObjectId and activeYear to integer
+		const year = parseInt(activeYear, 10);
+		const objectIdUser = new mongoose.Types.ObjectId(userId); // Use `new` keyword here
+
+		// Find the PTOTotal for the user and active year
+		const ptoTotal = await PTOTotal.findOne({ userId: objectIdUser, activeYear: year });
+
+		if (!ptoTotal) {
+			return res.status(404).json({ message: 'No notes found for this year' });
+		}
+
+		// Return the notes found for that user and year
+		res.json({ notes: ptoTotal.notes || '' });
+	} catch (error) {
+		console.error('Error fetching notes:', error);
 		res.status(500).json({ message: 'Server error' });
 	}
 });
