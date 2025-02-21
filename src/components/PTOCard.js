@@ -2,59 +2,58 @@ import React, { useState } from 'react';
 import { SketchPicker } from 'react-color';
 import '../App.css';
 
-const PTOCard = ({ ptoList, addPTO, updatePTO, deletePTO }) => {
-	// State to manage new PTO entry form and color selection
+const { HOST } = require('../config.js');
+
+const PTOCard = ({ ptoList, addPTO, updatePTO, deletePTO, activeYear }) => {
+	// State for new PTO entry
 	const [newPTO, setNewPTO] = useState({
 		name: '',
 		date: '',
 		color: '#FF5733',
 		pto_year: '',
 	});
-	// State to manage currently edited PTO item
+	// State for editing PTO
 	const [editingPTO, setEditingPTO] = useState(null);
-	// State to toggle the color picker visibility
+	// State for color picker visibility
 	const [showColorPicker, setShowColorPicker] = useState(false);
+	// State for PTO planning notes
+	const [notes, setNotes] = useState('');
 
-	// Handles form input changes (name, date, and year)
 	const handleInputChange = (e) => {
 		const { name, value } = e.target;
 		setNewPTO((prev) => ({ ...prev, [name]: value }));
 	};
 
-	// Updates the color in the newPTO state when the color picker changes
 	const handleColorChange = (color) => {
 		setNewPTO((prev) => ({ ...prev, color: color.hex }));
 	};
 
-	// Handles adding a new PTO item, sends it to the parent function (addPTO)
 	const handleAddPTO = async (e) => {
-		e.preventDefault(); // Prevents form submission
-		const uniqueId = Date.now().toString(); // Create a unique ID for the new PTO
-		await addPTO({ ...newPTO, unique_id: uniqueId }); // Pass new PTO to parent function
-		setNewPTO({ name: '', date: '', color: '#FF5733', pto_year: '' }); // Reset the form after adding PTO
-		setShowColorPicker(false); // Hide the color picker
+		e.preventDefault();
+		const uniqueId = Date.now().toString();
+		await addPTO({ ...newPTO, unique_id: uniqueId });
+		setNewPTO({ name: '', date: '', color: '#FF5733', pto_year: '' });
+		setShowColorPicker(false);
 	};
 
-	// Prepares the PTO form for editing when an existing PTO is clicked
 	const handleEditPTO = (pto) => {
-		setEditingPTO(pto); // Set the PTO to be edited
+		setEditingPTO(pto);
 		setNewPTO({
 			name: pto.name,
-			date: new Date(pto.date).toISOString().split('T')[0], // Convert date to 'YYYY-MM-DD' format
-			color: pto.color || '#FF5733', // Set color, default to red if not specified
+			date: new Date(pto.date).toISOString().split('T')[0],
+			color: pto.color || '#FF5733',
 			pto_year: pto.pto_year || '',
 		});
-		setShowColorPicker(false); // Hide the color picker when editing
+		setShowColorPicker(false);
 	};
 
-	// Handles updating an existing PTO, sends the updated PTO to the parent function (updatePTO)
 	const handleUpdatePTO = async (e) => {
-		e.preventDefault(); // Prevents form submission
+		e.preventDefault();
 		if (editingPTO) {
-			await updatePTO(editingPTO._id, newPTO); // Update the PTO with the new data
-			setEditingPTO(null); // Reset the editing state
-			setNewPTO({ name: '', date: '', color: '#FF5733', pto_year: '' }); // Reset the form
-			setShowColorPicker(false); // Hide the color picker
+			await updatePTO(editingPTO._id, newPTO);
+			setEditingPTO(null);
+			setNewPTO({ name: '', date: '', color: '#FF5733', pto_year: '' });
+			setShowColorPicker(false);
 		}
 	};
 
@@ -159,6 +158,43 @@ const PTOCard = ({ ptoList, addPTO, updatePTO, deletePTO }) => {
 								)}
 							</form>
 						</div>
+					</div>
+					<div className="mb-3">
+						<label htmlFor="notes" className="form-label">
+							Notes for {activeYear}
+						</label>
+						<textarea
+							id="notes"
+							className="form-control dark-input"
+							value={notes}
+							onChange={(e) => setNotes(e.target.value)}
+						/>
+						<button
+							className="btn btn-success mt-2"
+							onClick={async () => {
+								try {
+									const response = await fetch(`${HOST}/api/pto/notes`, {
+										method: 'PUT',
+										credentials: 'include',
+										headers: {
+											'Content-Type': 'application/json',
+										},
+										body: JSON.stringify({ activeYear, notes }),
+									});
+
+									const data = await response.json();
+
+									if (!response.ok) {
+										throw new Error(data.message || 'Failed to save notes');
+									}
+								} catch (error) {
+									console.error('Error saving notes:', error);
+									alert(error.message);
+								}
+							}}
+						>
+							Save Notes
+						</button>
 					</div>
 				</div>
 				{/* PTO List Table */}

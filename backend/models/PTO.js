@@ -39,6 +39,8 @@ const PTOTotalSchema = new mongoose.Schema({
 		ref: 'User', // Reference to the 'User' model
 		required: true,
 	},
+
+	notes: { type: String, default: '' },
 });
 
 module.exports = {

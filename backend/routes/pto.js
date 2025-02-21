@@ -17,6 +17,43 @@ router.get('/', authenticate, async (req, res) => {
 	}
 });
 
+// Update or Add Notes for PTO
+router.put('/notes', authenticate, async (req, res) => {
+	if (!req.user) {
+		return res.status(401).json({ message: 'Unauthorized' });
+	}
+
+	const { activeYear, notes } = req.body;
+	const userId = req.user.id;
+
+	// Ensure required fields are present
+	if (!activeYear || notes === undefined) {
+		return res.status(400).json({ error: 'Missing required fields' });
+	}
+
+	try {
+		// Find the PTO total entry for the user and active year
+		let ptoTotal = await PTOTotal.findOne({ userId, activeYear });
+
+		if (!ptoTotal) {
+			console.log('No PTOTotal entry found. Creating a new one...');
+			// If no entry exists, create one with default total PTO (adjust as needed)
+			ptoTotal = new PTOTotal({ userId, activeYear, totalPTO: 0, notes });
+		} else {
+			// If entry exists, update only the notes
+			ptoTotal.notes = notes;
+		}
+
+		// Save the updated or new PTO total entry
+		await ptoTotal.save();
+
+		res.json({ message: 'Notes updated successfully', ptoTotal });
+	} catch (error) {
+		console.error('Server error:', error);
+		res.status(500).json({ message: 'Server error' });
+	}
+});
+
 // GET a PTO item by ID
 router.get('/:id', async (req, res) => {
 	try {
