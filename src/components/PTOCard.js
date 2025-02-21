@@ -74,17 +74,52 @@ const PTOCard = ({ ptoList, addPTO, updatePTO, deletePTO, activeYear }) => {
 
 	const handleAddPTO = async (e) => {
 		e.preventDefault();
-		const uniqueId = Date.now().toString();
-		await addPTO({ ...newPTO, unique_id: uniqueId });
-		setNewPTO({ name: '', date: '', color: '#FF5733', pto_year: '' });
-		setShowColorPicker(false);
+		const { startDate, endDate } = newPTO;
+
+		// Validate if both startDate and endDate are present
+		if (startDate && endDate) {
+			const start = new Date(startDate);
+			const end = new Date(endDate);
+
+			// Check if end date is after start date
+			if (end < start) {
+				alert('End date must be after start date');
+				return;
+			}
+
+			// Generate PTO items for each day in the range
+			const ptoEntries = [];
+			let currentDate = start;
+			while (currentDate <= end) {
+				// Generate unique_id for each PTO entry
+				const uniqueId = Date.now().toString() + currentDate.toISOString();
+				ptoEntries.push({
+					...newPTO,
+					date: currentDate.toISOString().split('T')[0], // Format as YYYY-MM-DD
+					unique_id: uniqueId, // Add unique_id
+				});
+				currentDate.setDate(currentDate.getDate() + 1); // Increment day
+			}
+
+			// Add each PTO entry
+			for (const entry of ptoEntries) {
+				await addPTO(entry);
+			}
+
+			// Reset the form
+			setNewPTO({ name: '', startDate: '', endDate: '', color: '#FF5733', pto_year: '' });
+			setShowColorPicker(false);
+		} else {
+			alert('Please provide both start and end dates.');
+		}
 	};
 
 	const handleEditPTO = (pto) => {
 		setEditingPTO(pto);
 		setNewPTO({
 			name: pto.name,
-			date: new Date(pto.date).toISOString().split('T')[0],
+			startDate: new Date(pto.date).toISOString().split('T')[0],
+			endDate: new Date(pto.date).toISOString().split('T')[0], // Single day for editing
 			color: pto.color || '#FF5733',
 			pto_year: pto.pto_year || '',
 		});
@@ -96,7 +131,7 @@ const PTOCard = ({ ptoList, addPTO, updatePTO, deletePTO, activeYear }) => {
 		if (editingPTO) {
 			await updatePTO(editingPTO._id, newPTO);
 			setEditingPTO(null);
-			setNewPTO({ name: '', date: '', color: '#FF5733', pto_year: '' });
+			setNewPTO({ name: '', startDate: '', endDate: '', color: '#FF5733', pto_year: '' });
 			setShowColorPicker(false);
 		}
 	};
@@ -126,17 +161,32 @@ const PTOCard = ({ ptoList, addPTO, updatePTO, deletePTO, activeYear }) => {
 										required
 									/>
 								</div>
-								{/* PTO Date Input */}
+								{/* PTO Start Date Input */}
 								<div className="mb-3">
-									<label htmlFor="date" className="form-label">
-										Date
+									<label htmlFor="startDate" className="form-label">
+										Start Date
 									</label>
 									<input
 										type="date"
-										id="date"
-										name="date"
+										id="startDate"
+										name="startDate"
 										className="form-control dark-input"
-										value={newPTO.date}
+										value={newPTO.startDate}
+										onChange={handleInputChange}
+										required
+									/>
+								</div>
+								{/* PTO End Date Input */}
+								<div className="mb-3">
+									<label htmlFor="endDate" className="form-label">
+										End Date
+									</label>
+									<input
+										type="date"
+										id="endDate"
+										name="endDate"
+										className="form-control dark-input"
+										value={newPTO.endDate}
 										onChange={handleInputChange}
 										required
 									/>
