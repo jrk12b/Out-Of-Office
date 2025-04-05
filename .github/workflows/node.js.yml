@@ -1,9 +1,9 @@
-name: Out-Of-Office
+name: Out-Of-Office Workflow
 on:
   push:
-    branches: ['develop', 'main']
+    branches: ['main']
   pull_request:
-    branches: ['develop', 'main']
+    branches: ['main']
   workflow_dispatch:
 
 jobs:
