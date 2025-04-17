@@ -23,6 +23,8 @@ const PTOSchema = new mongoose.Schema({
 
 	// Color code associated with the PTO (defaults to a specific color if not provided)
 	color: { type: String, default: '#FF5733' },
+
+	is_pto: { type: Boolean, default: true },
 });
 
 // Defining a schema for tracking total PTO available per year for each user

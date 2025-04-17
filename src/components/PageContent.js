@@ -75,9 +75,13 @@ const PageContent = ({ activeYear, ptoList, addPTO, deletePTO, setPtoList }) => 
 	// Filter PTO list to only include entries for the active year
 	const filteredPTOList = ptoList.filter((pto) => pto.pto_year === activeYear);
 
+	const filteredPTOListIsPto = ptoList.filter(
+		(pto) => pto.pto_year === activeYear && pto.is_pto === true
+	);
+
 	// Calculate total PTO, planned PTO count, and remaining PTO
 	const totalPTO = totalPTOByYear[activeYear] || 0; // Use 0 as default if no PTO is found for the year
-	const ptoPlanned = filteredPTOList.length; // Number of planned PTO entries for the year
+	const ptoPlanned = filteredPTOListIsPto.length; // Number of planned PTO entries for the year
 	const ptoRemaining = totalPTO - ptoPlanned; // Calculate remaining PTO
 
 	return (

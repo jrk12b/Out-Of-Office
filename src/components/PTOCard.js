@@ -19,6 +19,9 @@ const PTOCard = ({ ptoList, addPTO, updatePTO, deletePTO, activeYear }) => {
 	// State for PTO planning notes
 	const [notes, setNotes] = useState('');
 
+	const [isPTO, setIsPTO] = useState(true);
+	console.log('is pto: ' + isPTO);
+
 	useEffect(() => {
 		const fetchNotes = async () => {
 			try {
@@ -97,6 +100,7 @@ const PTOCard = ({ ptoList, addPTO, updatePTO, deletePTO, activeYear }) => {
 					...newPTO,
 					date: currentDate.toISOString().split('T')[0], // Format as YYYY-MM-DD
 					unique_id: uniqueId, // Add unique_id
+					is_pto: isPTO,
 				});
 				currentDate.setDate(currentDate.getDate() + 1); // Increment day
 			}
@@ -107,7 +111,14 @@ const PTOCard = ({ ptoList, addPTO, updatePTO, deletePTO, activeYear }) => {
 			}
 
 			// Reset the form
-			setNewPTO({ name: '', startDate: '', endDate: '', color: '#FF5733', pto_year: '' });
+			setNewPTO({
+				name: '',
+				startDate: '',
+				endDate: '',
+				color: '#FF5733',
+				pto_year: '',
+				is_pto: true,
+			});
 			setShowColorPicker(false);
 		} else {
 			alert('Please provide both start and end dates.');
@@ -122,6 +133,7 @@ const PTOCard = ({ ptoList, addPTO, updatePTO, deletePTO, activeYear }) => {
 			endDate: new Date(pto.date).toISOString().split('T')[0], // Single day for editing
 			color: pto.color || '#FF5733',
 			pto_year: pto.pto_year || '',
+			is_pto: isPTO,
 		});
 		setShowColorPicker(false);
 	};
@@ -129,10 +141,18 @@ const PTOCard = ({ ptoList, addPTO, updatePTO, deletePTO, activeYear }) => {
 	const handleUpdatePTO = async (e) => {
 		e.preventDefault();
 		if (editingPTO) {
-			await updatePTO(editingPTO._id, newPTO);
+			await updatePTO(editingPTO._id, { ...newPTO, is_pto: isPTO });
 			setEditingPTO(null);
-			setNewPTO({ name: '', startDate: '', endDate: '', color: '#FF5733', pto_year: '' });
+			setNewPTO({
+				name: '',
+				startDate: '',
+				endDate: '',
+				color: '#FF5733',
+				pto_year: '',
+				is_pto: true,
+			});
 			setShowColorPicker(false);
+			setIsPTO(true);
 		}
 	};
 
@@ -146,6 +166,16 @@ const PTOCard = ({ ptoList, addPTO, updatePTO, deletePTO, activeYear }) => {
 						</div>
 						<div className="card-body">
 							<form onSubmit={editingPTO ? handleUpdatePTO : handleAddPTO}>
+								<div className="mb-3">
+									<label>
+										<input
+											type="checkbox"
+											checked={isPTO}
+											onChange={(e) => setIsPTO(e.target.checked)}
+										/>
+										This is PTO
+									</label>
+								</div>
 								{/* PTO Name Input */}
 								<div className="mb-3">
 									<label htmlFor="name" className="form-label">
@@ -243,7 +273,13 @@ const PTOCard = ({ ptoList, addPTO, updatePTO, deletePTO, activeYear }) => {
 										className="btn btn-secondary"
 										onClick={() => {
 											setEditingPTO(null);
-											setNewPTO({ name: '', date: '', color: '#FF5733', pto_year: '' });
+											setNewPTO({
+												name: '',
+												date: '',
+												color: '#FF5733',
+												pto_year: '',
+												is_pto: true,
+											});
 										}}
 										style={{ marginLeft: '10px' }}
 									>
@@ -282,6 +318,7 @@ const PTOCard = ({ ptoList, addPTO, updatePTO, deletePTO, activeYear }) => {
 										<th>Year</th>
 										<th>Color</th>
 										<th>Actions</th>
+										<th>Status</th>
 									</tr>
 								</thead>
 								<tbody>
@@ -290,6 +327,7 @@ const PTOCard = ({ ptoList, addPTO, updatePTO, deletePTO, activeYear }) => {
 											<td>{pto.name}</td>
 											<td>{new Date(pto.date).toLocaleDateString('en-US', { timeZone: 'UTC' })}</td>
 											<td>{pto.pto_year}</td>
+											<td>{pto.is_pto ? 'PTO' : 'Not PTO'}</td>
 											<td>
 												<div
 													style={{
