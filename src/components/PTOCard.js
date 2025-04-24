@@ -20,7 +20,6 @@ const PTOCard = ({ ptoList, addPTO, updatePTO, deletePTO, activeYear }) => {
 	const [notes, setNotes] = useState('');
 
 	const [isPTO, setIsPTO] = useState(true);
-	console.log('is pto: ' + isPTO);
 
 	useEffect(() => {
 		const fetchNotes = async () => {
@@ -310,52 +309,87 @@ const PTOCard = ({ ptoList, addPTO, updatePTO, deletePTO, activeYear }) => {
 					<div className="card dark-card">
 						<div className="card-header dark-card-header">Days of PTO</div>
 						<div className="card-body">
+							<div className="mb-3">
+								<label style={{ marginRight: '10px' }}>Show:</label>
+								<div className="form-check form-check-inline">
+									<input
+										className="form-check-input"
+										type="radio"
+										name="ptoFilter"
+										id="showPTO"
+										value="pto"
+										checked={isPTO}
+										onChange={() => setIsPTO(true)}
+									/>
+									<label className="form-check-label" htmlFor="showPTO">
+										PTO Items
+									</label>
+								</div>
+								<div className="form-check form-check-inline">
+									<input
+										className="form-check-input"
+										type="radio"
+										name="ptoFilter"
+										id="showNonPTO"
+										value="nonPTO"
+										checked={!isPTO}
+										onChange={() => setIsPTO(false)}
+									/>
+									<label className="form-check-label" htmlFor="showNonPTO">
+										Non-PTO Items
+									</label>
+								</div>
+							</div>
 							<table className="table dark-table">
 								<thead>
 									<tr>
 										<th>Name</th>
 										<th>Date</th>
 										<th>Year</th>
+										<th>Status</th>
 										<th>Color</th>
 										<th>Actions</th>
-										<th>Status</th>
 									</tr>
 								</thead>
 								<tbody>
-									{ptoList.map((pto) => (
-										<tr key={pto._id}>
-											<td>{pto.name}</td>
-											<td>{new Date(pto.date).toLocaleDateString('en-US', { timeZone: 'UTC' })}</td>
-											<td>{pto.pto_year}</td>
-											<td>{pto.is_pto ? 'PTO' : 'Not PTO'}</td>
-											<td>
-												<div
-													style={{
-														width: '20px',
-														height: '20px',
-														backgroundColor: pto.color,
-														borderRadius: '50%',
-														border: '1px solid #ccc',
-													}}
-												></div>
-											</td>
-											<td>
-												<button
-													className="btn btn-warning btn-sm"
-													onClick={() => handleEditPTO(pto)}
-												>
-													Edit
-												</button>
-												<button
-													className="btn btn-danger btn-sm"
-													onClick={() => deletePTO(pto._id)}
-													style={{ marginLeft: '5px' }}
-												>
-													Delete
-												</button>
-											</td>
-										</tr>
-									))}
+									{ptoList
+										.filter((pto) => pto.is_pto === isPTO)
+										.map((pto) => (
+											<tr key={pto._id}>
+												<td>{pto.name}</td>
+												<td>
+													{new Date(pto.date).toLocaleDateString('en-US', { timeZone: 'UTC' })}
+												</td>
+												<td>{pto.pto_year}</td>
+												<td>{pto.is_pto ? 'PTO' : 'Not PTO'}</td>
+												<td>
+													<div
+														style={{
+															width: '20px',
+															height: '20px',
+															backgroundColor: pto.color,
+															borderRadius: '50%',
+															border: '1px solid #ccc',
+														}}
+													></div>
+												</td>
+												<td>
+													<button
+														className="btn btn-warning btn-sm"
+														onClick={() => handleEditPTO(pto)}
+													>
+														Edit
+													</button>
+													<button
+														className="btn btn-danger btn-sm"
+														onClick={() => deletePTO(pto._id)}
+														style={{ marginLeft: '5px' }}
+													>
+														Delete
+													</button>
+												</td>
+											</tr>
+										))}
 								</tbody>
 							</table>
 						</div>

@@ -12,6 +12,10 @@ main {
 	filter: invert(100%);
 }
 
+.form-label {
+	color: white;
+}
+
 .navbar-toggler {
 	border-color: white;
 }
