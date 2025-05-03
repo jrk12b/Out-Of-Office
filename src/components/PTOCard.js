@@ -67,7 +67,24 @@ const PTOCard = ({ ptoList, addPTO, updatePTO, deletePTO, activeYear }) => {
 
 	const handleInputChange = (e) => {
 		const { name, value } = e.target;
-		setNewPTO((prev) => ({ ...prev, [name]: value }));
+
+		setNewPTO((prev) => {
+			const updated = { ...prev, [name]: value };
+
+			// Only if a full date is typed
+			if (name === 'startDate' && /^\d{4}-\d{2}-\d{2}$/.test(value)) {
+				// Auto-fill endDate when adding a new PTO
+				if (!editingPTO) {
+					updated.endDate = value;
+				}
+
+				// Auto-fill year from startDate
+				const yearFromDate = value.split('-')[0];
+				updated.pto_year = yearFromDate;
+			}
+
+			return updated;
+		});
 	};
 
 	const handleColorChange = (color) => {
