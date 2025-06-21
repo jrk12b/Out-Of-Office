@@ -12,6 +12,8 @@ const Calendar = ({ activeYear, ptoList }) => {
 	const [multiMonthColumns, setMultiMonthColumns] = useState(1);
 	// State to manage the tooltip content (for event details)
 	const [tooltip, setTooltip] = useState(null);
+	// State to toggle between PTO and non-PTO items
+	const [isPTO, setIsPTO] = useState(true);
 
 	// useEffect hook to go to the first day of the active year on initial load
 	useEffect(() => {
@@ -22,12 +24,14 @@ const Calendar = ({ activeYear, ptoList }) => {
 		}
 	}, [activeYear]); // Only runs when the 'activeYear' prop changes
 
-	// Map through the PTO list and create events for FullCalendar
-	const calendarEvents = ptoList.map((pto) => ({
-		title: pto.name, // Event title (PTO name)
-		date: pto.date, // Event date (PTO date)
-		color: pto.color || '#FF5733', // PTO event color (default is red if not specified)
-	}));
+	// Map through the PTO list and create events for FullCalendar, filtered by isPTO
+	const calendarEvents = ptoList
+		.filter((pto) => pto.is_pto === isPTO)
+		.map((pto) => ({
+			title: pto.name, // Event title (PTO name)
+			date: pto.date, // Event date (PTO date)
+			color: pto.color || '#FF5733', // PTO event color (default is red if not specified)
+		}));
 
 	// Function to handle changes in the number of columns displayed in the multi-month view
 	const handleColumnsChange = (columns) => {
@@ -63,6 +67,37 @@ const Calendar = ({ activeYear, ptoList }) => {
 				{/* Button to show 2 columns */}
 				<button onClick={() => handleColumnsChange(3)}>3 Columns</button>{' '}
 				{/* Button to show 3 columns */}
+			</div>
+			<div className="mb-3">
+				<label style={{ marginRight: '10px' }}>Show:</label>
+				<div className="form-check form-check-inline">
+					<input
+						className="form-check-input"
+						type="radio"
+						name="calendarPTOFilter"
+						id="calendarShowPTO"
+						value="pto"
+						checked={isPTO}
+						onChange={() => setIsPTO(true)}
+					/>
+					<label className="form-check-label" htmlFor="calendarShowPTO">
+						PTO Items
+					</label>
+				</div>
+				<div className="form-check form-check-inline">
+					<input
+						className="form-check-input"
+						type="radio"
+						name="calendarPTOFilter"
+						id="calendarShowNonPTO"
+						value="nonPTO"
+						checked={!isPTO}
+						onChange={() => setIsPTO(false)}
+					/>
+					<label className="form-check-label" htmlFor="calendarShowNonPTO">
+						Non-PTO Items
+					</label>
+				</div>
 			</div>
 			{/* FullCalendar component displaying events */}
 			<FullCalendar
