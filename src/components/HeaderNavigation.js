@@ -77,6 +77,9 @@ const HeaderNavigation = ({ activeYear, setActiveYear, onLogout, isLoggedIn }) =
 						<Nav.Link onClick={() => navigate('/map')} className="nav-item-link">
 							Map
 						</Nav.Link>
+						<Nav.Link onClick={() => navigate('/habits')} className="nav-item-link">
+							Daily Habits
+						</Nav.Link>
 					</Nav>
 					{/* If user is logged in, show dropdown with user options */}
 					{user ? (

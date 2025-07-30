@@ -6,6 +6,7 @@ const cookieParser = require('cookie-parser');
 const { exec } = require('child_process');
 const authRoutes = require('./routes/auth');
 const pinRoutes = require('./routes/pins');
+const habitRoutes = require('./routes/habitRoutes');
 
 // Check if frontend environment variable is set to 'true'
 const frontend = process.env.FRONTEND;
@@ -52,10 +53,14 @@ if (frontend === 'true') {
 		.then(() => console.log('Connected to MongoDB')) // Log success
 		.catch((err) => console.error('Error connecting to MongoDB', err)); // Log error if connection fails
 
+	// Create a separate connection for the Habits DB
+	require('./habitsDb.js');
+
 	// Define API routes
 	app.use('/api/pto', ptoRoutes); // Use the PTO routes for /api/pto endpoints
 	app.use('/api/auth', authRoutes); // Use the authentication routes for /api/auth endpoints
 	app.use('/api/pins', pinRoutes); // Use the pins routes for /api/pins endpoints
+	app.use('/api', habitRoutes);
 
 	// Start the Express server and listen on the specified port
 	app.listen(PORT, () => console.log(`Server running on port ${PORT}`));

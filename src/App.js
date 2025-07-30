@@ -5,6 +5,7 @@ import axios from 'axios';
 import HeaderNavigation from './components/HeaderNavigation';
 import PageContent from './components/PageContent';
 import Map from './components/Map';
+import Habits from './components/Habits';
 import Profile from './components/Profile';
 import Register from './components/Register';
 import Login from './components/Login';
@@ -106,6 +107,7 @@ const App = () => {
 				<Route path="/login" element={<Login onLogin={handleLogin} />} />
 				{/* Map route */}
 				<Route path="/map" element={<Map />} />
+				<Route path="/habits" element={<Habits />} />
 				{/* Profile route */}
 				<Route path="/profile" element={<Profile />} />
 				{/* Home route (main page) */}
