@@ -3,18 +3,21 @@
 	display: flex;
 	justify-content: center;
 	align-items: center;
-	height: 100vh; /* Full viewport height */
-	background-color: #333333; /* Light background to align with the app */
+	height: 100vh;
+	background-color: transparent; /* ✅ allow video to show through */
+	position: relative;
+	z-index: 1; /* Ensures it shows above the video */
 }
 
 /* Style the login form */
 .login-form {
-	background: #fff; /* White background for the card */
+	background: rgba(255, 255, 255, 0.85); /* ✅ translucent white */
 	padding: 20px;
 	border-radius: 8px;
-	box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Subtle shadow */
+	box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
 	width: 100%;
-	max-width: 400px; /* Limit the form width */
+	max-width: 400px;
+	z-index: 2;
 }
 
 /* Form group styling */

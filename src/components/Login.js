@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import axios from 'axios';
 import { useNavigate, Link } from 'react-router-dom';
 import '../auth.css';
+import VideoBackground from '../components/videoBackground.js';
 
 const { HOST } = require('../config.js');
 
@@ -34,6 +35,8 @@ const Login = ({ onLogin }) => {
 	};
 
 	return (
+		<div>
+		<VideoBackground />
 		<div className="login-container">
 			<div className="login-form">
 				<h2>Login</h2>
@@ -81,6 +84,7 @@ const Login = ({ onLogin }) => {
 					</p>
 				</div>
 			</div>
+		</div>
 		</div>
 	);
 };

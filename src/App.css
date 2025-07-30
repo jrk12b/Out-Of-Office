@@ -8,6 +8,16 @@ main {
 	min-height: 100vh; /* Ensures content covers the full viewport height */
 }
 
+.video-background {
+	position: fixed; /* Changed from absolute to fixed */
+	top: 0;
+	left: 0;
+	width: 100vw; /* Full viewport width */
+	height: 100vh; /* Full viewport height */
+	z-index: -1;
+	overflow: hidden;
+}
+
 .navbar-toggler-icon {
 	filter: invert(100%);
 }
