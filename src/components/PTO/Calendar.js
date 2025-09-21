@@ -3,7 +3,7 @@ import FullCalendar from '@fullcalendar/react';
 import multiMonthPlugin from '@fullcalendar/multimonth';
 import dayGridPlugin from '@fullcalendar/daygrid';
 import interactionPlugin from '@fullcalendar/interaction';
-import '../Calendar.css';
+import '../../styles/Calendar.css';
 
 // Calendar component accepts 'activeYear' and 'ptoList' as props
 const Calendar = ({ activeYear, ptoList }) => {

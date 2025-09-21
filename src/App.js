@@ -2,15 +2,15 @@ import React, { useState, useEffect } from 'react';
 import { BrowserRouter as Router, Route, Routes, Link } from 'react-router-dom';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import axios from 'axios';
-import HeaderNavigation from './components/HeaderNavigation';
-import PageContent from './components/PageContent';
+import HeaderNavigation from './components/Auth/HeaderNavigation.js';
+import PageContent from './components/PTO/PageContent.js';
 import Map from './components/Map';
-import Habits from './components/Habits';
-import Profile from './components/Profile';
-import Register from './components/Register';
-import Login from './components/Login';
-import Calendar from './components/Calendar';
-import './App.css';
+import Habits from './components/Habits/Habits.js';
+import Profile from './components/Auth/Profile.js';
+import Register from './components/Auth/Register.js';
+import Login from './components/Auth/Login.js';
+import Calendar from './components/PTO/Calendar.js';
+import './styles/App.css';
 
 const { HOST } = require('./config.js'); // Import the backend host URL from the config file
 

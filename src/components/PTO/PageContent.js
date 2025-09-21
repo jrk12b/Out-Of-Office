@@ -1,11 +1,11 @@
 import React, { useState, useEffect } from 'react';
-import PTOPlannedCard from './PTOPlannedCard';
-import TotalPTOCard from './PTOTotalCard';
-import PTORemainingCard from './PTORemainingCard';
-import PTOCard from './PTOCard';
+import PTOPlannedCard from './PTOPlannedCard.js';
+import TotalPTOCard from './PTOTotalCard.js';
+import PTORemainingCard from './PTORemainingCard.js';
+import PTOCard from './PTOCard.js';
 import axios from 'axios';
 
-const { HOST } = require('../config.js'); // Import the host URL from the config file
+const { HOST } = require('../../config.js');
 
 const PageContent = ({ activeYear, ptoList, addPTO, deletePTO, setPtoList }) => {
 	// State to store the total PTO for each year

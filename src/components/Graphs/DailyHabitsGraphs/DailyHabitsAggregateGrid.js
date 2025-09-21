@@ -1,7 +1,7 @@
 import React, { useMemo, useState } from 'react';
 import { AgGridReact } from 'ag-grid-react';
-import useFetchHabits from '../../useFetchHabits';
-import '../../../YourTime.css';
+import useFetchHabits from '../../Habits/useFetchHabits';
+import '../../../styles/YourTime.css';
 
 const DailyHabitsAggregateGrid = () => {
 	const { habits } = useFetchHabits();
@@ -45,7 +45,7 @@ const DailyHabitsAggregateGrid = () => {
 
 			const row = { name: habit.name };
 
-			months.forEach((monthName, index) => {
+			months.forEach((monthName) => {
 				const count = monthlyCounts[monthName] || 0;
 				const requiredCompletions = habit.goal;
 
@@ -86,10 +86,7 @@ const DailyHabitsAggregateGrid = () => {
 				</button>
 			</div>
 
-			<div
-				className="ag-theme-alpine"
-				style={{ width: '100%', overflowX: 'auto' }}
-			>
+			<div className="ag-theme-alpine" style={{ width: '100%', overflowX: 'auto' }}>
 				<AgGridReact
 					rowData={rowData}
 					columnDefs={colDefs}

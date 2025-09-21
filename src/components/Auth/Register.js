@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
 import axios from 'axios';
-import '../auth.css';
+import '../../styles/auth.css';
 
-const { HOST } = require('../config.js'); // Get the host URL from the configuration
+const { HOST } = require('../../config.js'); // Get the host URL from the configuration
 
 const Register = () => {
 	// State hooks to manage user input and messages
