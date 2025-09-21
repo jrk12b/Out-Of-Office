@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { SketchPicker } from 'react-color';
-import '../App.css';
+import '../../styles/App.css';
 
-const { HOST } = require('../config.js');
+const { HOST } = require('../../config');
 
 const PTOCard = ({ ptoList, addPTO, updatePTO, deletePTO, activeYear }) => {
 	// State for new PTO entry

@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Card, Container } from 'react-bootstrap';
 import axios from 'axios';
 
-const { HOST } = require('../config.js'); // Import the host URL from the config file
+const { HOST } = require('../../config.js'); // Import the host URL from the config file
 
 const ProfilePage = () => {
 	// State to store user data

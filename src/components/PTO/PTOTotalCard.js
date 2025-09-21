@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Card, Button, Form } from 'react-bootstrap';
 import axios from 'axios';
 
-const { HOST } = require('../config.js'); // Get the host URL from the configuration
+const { HOST } = require('../../config.js'); // Get the host URL from the configuration
 
 const TotalPTOCard = ({ activeYear }) => {
 	// State hooks to manage total PTO and editing state

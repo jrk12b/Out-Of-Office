@@ -1,6 +1,6 @@
 import React, { useMemo, useState, useEffect } from 'react';
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend } from 'recharts';
-import useFetchHabits from '../../useFetchHabits';
+import useFetchHabits from '../../Habits/useFetchHabits';
 import GraphColors from './GraphColors';
 
 // This component that fetches habit data, transforms it, and displays it in a Line chart using Recharts.

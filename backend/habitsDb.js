@@ -1,5 +1,5 @@
 const mongoose = require('mongoose');
-const { HABITS_MONGODB_URI } = require('../config'); // adjust path as needed
+const { HABITS_MONGODB_URI } = require('../config');
 
 const habitsConnection = mongoose.createConnection(HABITS_MONGODB_URI, {
 	useNewUrlParser: true,

@@ -1,19 +1,25 @@
 import { useState, useEffect } from 'react';
-import '../YourTime.css';
+import '../../styles/YourTime.css';
 import { AgGridReact } from 'ag-grid-react';
 import 'ag-grid-community/styles/ag-theme-alpine.css';
 import { useMemo } from 'react';
-import { fetchHabits, updateHabitOrder, getMonthlyNotes, updateMonthlyNotes, 	addHabit,
+import {
+	fetchHabits,
+	updateHabitOrder,
+	getMonthlyNotes,
+	updateMonthlyNotes,
+	addHabit,
 	updateHabitGoal,
 	updateHabitName,
 	updateHabitProgress,
-	deleteHabit, } from './contextHabits';
+	deleteHabit,
+} from './contextHabits';
 import { AllCommunityModule, ModuleRegistry } from 'ag-grid-community';
-import DailyHabitsBarGraph from '../components/Graphs/DailyHabitsGraphs/DailyHabitsBarGraph';
-import DailyHabitsLineGraph from '../components/Graphs/DailyHabitsGraphs/DailyHabitsLineGraph';
-import DailyHabitsComposedGraph from '../components/Graphs/DailyHabitsGraphs/DailyHabitsComposedGraph';
-import DailyHabitsAggregateGrid from '../components/Graphs/DailyHabitsGraphs/DailyHabitsAggregateGrid';
-import DailyHabitsHeatMap from '../components/Graphs/DailyHabitsGraphs/DailyHabitsHeatMap';
+import DailyHabitsBarGraph from '../Graphs/DailyHabitsGraphs/DailyHabitsBarGraph';
+import DailyHabitsLineGraph from '../Graphs/DailyHabitsGraphs/DailyHabitsLineGraph';
+import DailyHabitsComposedGraph from '../Graphs/DailyHabitsGraphs/DailyHabitsComposedGraph';
+import DailyHabitsAggregateGrid from '../Graphs/DailyHabitsGraphs/DailyHabitsAggregateGrid';
+import DailyHabitsHeatMap from '../Graphs/DailyHabitsGraphs/DailyHabitsHeatMap';
 
 ModuleRegistry.registerModules([AllCommunityModule]);
 
@@ -345,8 +351,12 @@ const DailyHabitsPage = () => {
 					}}
 				/>
 			</div>
-			<div style={ { padding: '2rem'  }}>
-				<h3>Notes for {new Date(currentYear, currentMonth).toLocaleString('default', { month: 'long' })} {currentYear}</h3>
+			<div style={{ padding: '2rem' }}>
+				<h3>
+					Notes for{' '}
+					{new Date(currentYear, currentMonth).toLocaleString('default', { month: 'long' })}{' '}
+					{currentYear}
+				</h3>
 				<textarea
 					style={{ width: '100%', height: '150px', fontSize: '1rem', padding: '1rem' }}
 					value={monthlyNotes}

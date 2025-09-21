@@ -6,7 +6,7 @@ const cookieParser = require('cookie-parser');
 const { exec } = require('child_process');
 const authRoutes = require('./routes/auth');
 const pinRoutes = require('./routes/pins');
-const habitRoutes = require('./routes/habitRoutes');
+const habitRoutes = require('./routes/habits');
 
 // Check if frontend environment variable is set to 'true'
 const frontend = process.env.FRONTEND;

@@ -2,7 +2,7 @@ import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 
-const { HOST } = require('../config.js');
+const { HOST } = require('../../config.js');
 
 const Logout = ({ onLogout }) => {
 	const navigate = useNavigate(); // Initializing useNavigate to handle page redirection

@@ -2,9 +2,9 @@ import React, { useState, useEffect } from 'react';
 import { Navbar, Nav, Container, Dropdown } from 'react-bootstrap';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
-import '../App.css';
+import '../../styles/App.css';
 
-const { HOST } = require('../config.js');
+const { HOST } = require('../../config.js');
 
 const HeaderNavigation = ({ activeYear, setActiveYear, onLogout, isLoggedIn }) => {
 	const navigate = useNavigate(); // Using the navigate hook from react-router-dom to handle page navigation
