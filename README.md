@@ -25,7 +25,7 @@ Out of Office is a powerful tool to manage and plan your time off. The app allow
 
 1. Clone repo locally
 
-- `git clone https://github.com/jrk12b/Time-Of-Day.git`
+- `git clone https://github.com/jrk12b/Out-Of-Office.git`
 
 2. Install Dependencies
 
