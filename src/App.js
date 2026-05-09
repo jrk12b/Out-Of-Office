@@ -16,7 +16,7 @@ const { HOST } = require('./config.js'); // Import the backend host URL from the
 
 const App = () => {
 	// State to track the active year and the list of PTO (Paid Time Off) entries
-	const [activeYear, setActiveYear] = useState('2025');
+	const [activeYear, setActiveYear] = useState('2026');
 	const [ptoList, setPtoList] = useState([]);
 	// State to track if the user is logged in or not
 	const [isLoggedIn, setIsLoggedIn] = useState(false);
